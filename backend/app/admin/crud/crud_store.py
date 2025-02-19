@@ -53,15 +53,15 @@ class CRUDStore(CRUDPlus[Store]):
                 self.model.created_time,
                 self.model.updated_by,
                 self.model.updated_time,
-                self.model.province_id.label("provinceId"),
-                ParentAddress.c.name.label("provinceName"),
-                self.model.city_id.label("cityId"),
-                CityAddress.c.name.label("cityName"),
-                self.model.area_id.label("areaId"),
-                AreaAddress.c.name.label("areaName"),
+                self.model.province_id,
+                ParentAddress.c.name.label("province_name"),
+                self.model.city_id,
+                CityAddress.c.name.label("city_name"),
+                self.model.area_id,
+                AreaAddress.c.name.label("area_name"),
                 self.model.address,
                 self.model.logo,
-                User.id.label("userId"),
+                User.id.label("user_id"),
                 User.username.label("username"),
                 User.phone.label("phone")
             )
@@ -69,6 +69,7 @@ class CRUDStore(CRUDPlus[Store]):
             .join(ParentAddress, self.model.province_id == ParentAddress.c.id)
             .join(CityAddress, self.model.city_id == CityAddress.c.id)
             .join(AreaAddress, self.model.area_id == AreaAddress.c.id)
+            .where(User.store_admin == True)
             .order_by(desc(self.model.id))
         )
         where_list = []
