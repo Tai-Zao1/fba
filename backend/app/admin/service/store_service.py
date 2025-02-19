@@ -4,7 +4,7 @@ from sqlalchemy import Select
 from backend.app.admin.crud.crud_store import store_dao
 from backend.app.admin.schema.dept import CreateDeptParam
 from backend.app.admin.schema.role import CreateRoleParam
-from backend.app.admin.schema.store import CreateStoreParam, ReviewStoreParam
+from backend.app.admin.schema.store import CreateStoreParam, ReviewStoreParam, UpdateStoreParam
 from backend.app.admin.schema.user import AddUserParam
 from backend.app.admin.service.user_service import user_service
 from backend.common.exception import errors
@@ -87,6 +87,21 @@ class StoreService:
                     raise errors.ForbiddenError(msg='审核不通过原因不能为空')
             # 审核商户
             await store_dao.review_store(db, obj.id, request.user.id, obj)
+
+    @staticmethod
+    async def update(*, request: Request, obj: UpdateStoreParam):
+        async with async_db_session.begin() as db:
+            # 验证权限
+            superuser_verify(request)
+            # 验证商户是否存在
+            store = await store_dao.check_id(db, store_id=obj.id)
+            if not store:
+                raise errors.NotFoundError(msg='商户不存在')
+            # 验证商户Code是否被修改
+            if store.code != obj.code:
+                raise errors.ForbiddenError(msg='商户编码不支持修改')
+            await store_dao.update_store(db, obj.id, request.user.id, obj)
+
 
 
 store_service: StoreService = StoreService()

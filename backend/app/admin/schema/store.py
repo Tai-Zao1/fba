@@ -7,8 +7,8 @@ from backend.common.schema import SchemaBase
 
 
 class StoreSchema(SchemaBase):
-    name: str
-    code: str
+    name: str = Field(description='店铺名称')
+    code: str = Field(description='店铺编号')
 
 
 class GetStoreInfoList(StoreSchema):
@@ -17,22 +17,22 @@ class GetStoreInfoList(StoreSchema):
     """
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
-    status: int
-    created_by: int | None = None
-    created_time: datetime | None = None
-    updated_by: int | None = None
-    updated_time: datetime | None = None
-    province_id: int
-    city_id: int
-    area_id: int
-    address: str | None = None
-    logo: str | None = None
+    id: int = Field(description='店铺ID')
+    status: int = Field(description='店铺状态')
+    created_by: int | None = Field(None, description='创建者')
+    created_time: datetime | None = Field(None, description='创建时间')
+    updated_by: int | None = Field(None, description='修改者')
+    updated_time: datetime | None = Field(None, description='更新时间')
+    province_id: int = Field(description='省份ID')
+    city_id: int = Field(description='城市ID')
+    area_id: int = Field(description='区县ID')
+    address: str | None = Field(None, description='详细地址')
+    logo: str | None = Field(None, description='店铺LOGO')
 
     # 地址信息
-    province_name: str
-    city_name: str
-    area_name: str
+    province_name: str = Field(description='省份名称')
+    city_name: str = Field(description='城市名称')
+    area_name: str = Field(description='区县名称')
 
     # 用户信息
     user_id: int
@@ -44,15 +44,13 @@ class CreateStoreParam(StoreSchema):
     """
     创建店铺
     """
-    username: str
-    phone: str
-    province_id: int
-    city_id: int
-    area_id: int
-    address: str | None = None
-    logo: str | None = None
-    created_ty: int | None = None
-    updated_ty: int | None = None
+    username: str = Field(description='店铺管理员姓名')
+    phone: str = Field(description='店铺管理员手机号')
+    province_id: int = Field(description='省份ID')
+    city_id: int = Field(description='城市ID')
+    area_id: int = Field(description='区县ID')
+    address: str | None = Field(None, description='详细地址')
+    logo: str | None = Field(None, description='店铺LOGO')
 
 
 class CreateStoreUserParam(AuthSchemaBase):
@@ -67,6 +65,19 @@ class ReviewStoreParam(SchemaBase):
     """
     审核店铺
     """
-    id: int
-    remark: str | None = None
+    id: int = Field(description='店铺ID')
+    remark: str | None = Field(None, description='审核备注')
     status: int = Field(description='1:审核通过， 2：审核不通过')
+
+
+class UpdateStoreParam(StoreSchema):
+    """
+    更店铺信息
+    """
+    id: int = Field(description='店铺ID')
+    province_id: int = Field(description='省份ID')
+    city_id: int = Field(description='城市ID')
+    area_id: int = Field(description='区县ID')
+    address: str | None = Field(None, description='详细地址')
+    logo: str | None = Field(None, description='店铺LOGO')
+

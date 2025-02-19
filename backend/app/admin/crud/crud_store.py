@@ -7,7 +7,7 @@ from backend.app.admin.model.address import Address
 from backend.app.admin.model.role import Role
 from backend.app.admin.model.store import Store
 from backend.app.admin.model.user import User
-from backend.app.admin.schema.store import CreateStoreParam, ReviewStoreParam
+from backend.app.admin.schema.store import CreateStoreParam, ReviewStoreParam, UpdateStoreParam
 from backend.common.security.jwt import get_hash_password
 
 
@@ -23,6 +23,7 @@ class CRUDStore(CRUDPlus[Store]):
         检查商户ID是否存在
         """
         return await self.select_model_by_column(db, id=store_id)
+
     async def get_list(self,
                        store_name: str | None,
                        province_id: int | None,
@@ -115,7 +116,8 @@ class CRUDStore(CRUDPlus[Store]):
             'dept_id': dept_id,
             'store_id': store_id,
             'is_staff': True,
-            'user_type': '20'
+            'user_type': '20',
+            'store_admin': 1
         }
 
         new_user = User(**user_dict)
@@ -133,5 +135,22 @@ class CRUDStore(CRUDPlus[Store]):
         dict_obj["updated_by"] = updated_by
         return await self.update_model(db, store_id, dict_obj)
 
+    async def update_store(self, db: AsyncSession, store_id: int, updated_by: str, obj: UpdateStoreParam) -> int:
+        """
+        更新商户信息
+        param store_id:
+        """
+        dict_obj = obj.model_dump(exclude={'username', 'phone'})
+        dict_obj["updated_by"] = updated_by
+        return await self.update_model(db, store_id, dict_obj)
+
+    async def update_store_user(self, db: AsyncSession, store_id: int, updated_by: str, obj: UpdateStoreParam) -> int:
+        """
+        更新商户用户信息
+        param store_id:
+        """
+        updated_user = {
+
+        }
 
 store_dao: CRUDStore = CRUDStore(Store)

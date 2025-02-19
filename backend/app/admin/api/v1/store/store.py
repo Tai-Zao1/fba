@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Query, Request
 
-from backend.app.admin.schema.store import CreateStoreParam, GetStoreInfoList, ReviewStoreParam
+from backend.app.admin.schema.store import CreateStoreParam, GetStoreInfoList, ReviewStoreParam, UpdateStoreParam
 from backend.app.admin.service.store_service import store_service
 from backend.common.pagination import DependsPagination, PageData, paging_data
 from backend.common.response.response_schema import ResponseSchemaModel, response_base
@@ -15,11 +15,12 @@ router = APIRouter()
 @router.get("/list", summary='（模糊条件）分页获取所有商户', dependencies=[DependsJwtAuth, DependsPagination])
 async def list_store(
         db: CurrentSession,
-        store_name: Annotated[str | None, Query()] = None,
-        province_id: Annotated[int | None, Query()] = None,
-        city_id: Annotated[int | None, Query()] = None,
-        area_id: Annotated[int | None, Query()] = None,
-        status: Annotated[int | None, Query()] = None) -> ResponseSchemaModel[PageData[GetStoreInfoList]]:
+        store_name: Annotated[str | None, Query(description='店铺名称')] = None,
+        province_id: Annotated[int | None, Query(description='省份id')] = None,
+        city_id: Annotated[int | None, Query(description='城市id')] = None,
+        area_id: Annotated[int | None, Query(description='区县id')] = None,
+        status: Annotated[int | None, Query(description='店铺状态,0:审核中，1:审核通过，2:审核拒绝')] = None
+) -> ResponseSchemaModel[PageData[GetStoreInfoList]]:
     store_select = await store_service.get_select(store_name=store_name, province_id=province_id, city_id=city_id,
                                                   area_id=area_id, status=status)
     store_page = await paging_data(db, store_select)
@@ -32,7 +33,13 @@ async def create_store(request: Request, obj: CreateStoreParam) -> ResponseSchem
     return response_base.success()
 
 
-@router.post("/review", summary='审核店铺', dependencies=[DependsJwtAuth])
+@router.put("/review", summary='审核店铺', dependencies=[DependsJwtAuth])
 async def review_store(request: Request, obj: ReviewStoreParam) -> ResponseSchemaModel:
     await store_service.review(request=request, obj=obj)
+    return response_base.success()
+
+
+@router.put("/update", summary='修改店铺信息', dependencies=[DependsJwtAuth])
+async def update_store(request: Request, obj: UpdateStoreParam) -> ResponseSchemaModel:
+    await store_service.update(request=request, obj=obj)
     return response_base.success()

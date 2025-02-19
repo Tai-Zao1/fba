@@ -322,5 +322,11 @@ class CRUDUser(CRUDPlus[User]):
         user = await db.execute(stmt.where(*filters))
         return user.scalars().first()
 
+    async def check_store_phone(self, db: AsyncSession, store_id: int) -> User | None:
+        """
+        根据商户id获取商户管理员信息
+        """
+        return await self.select_model_by_column(db, store_id=store_id, store_admin=1)
+
 
 user_dao: CRUDUser = CRUDUser(User)
