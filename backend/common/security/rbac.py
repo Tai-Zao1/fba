@@ -6,7 +6,6 @@ from backend.common.enums import MethodType, StatusType
 from backend.common.exception.errors import AuthorizationError, TokenError
 from backend.common.security.jwt import DependsJwtAuth
 from backend.core.conf import settings
-from backend.plugin.casbin.utils.rbac import casbin_verify
 
 
 async def rbac_verify(request: Request, _token: str = DependsJwtAuth) -> None:
@@ -66,9 +65,6 @@ async def rbac_verify(request: Request, _token: str = DependsJwtAuth) -> None:
                     allow_perms.extend(menu.perms.split(','))
         if path_auth_perm not in allow_perms:
             raise AuthorizationError
-    else:
-        await casbin_verify(request)
-
 
 # RBAC 授权依赖注入
 DependsRBAC = Depends(rbac_verify)

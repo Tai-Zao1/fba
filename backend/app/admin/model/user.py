@@ -46,8 +46,6 @@ class User(Base):
     user_type: Mapped[str | None] = mapped_column(String(11), default='00', comment="用户类型，00:系统，10:C端，20:B端")
     # 商户ID
     store_id: Mapped[int | None] = mapped_column(default=None, comment='商户ID')
-    store_admin: Mapped[bool] = mapped_column(
-        Boolean, default=False, comment='是否商户管理员，0：否，1：是')
     # 部门用户一对多
     dept_id: Mapped[int | None] = mapped_column(
         ForeignKey('sys_dept.id', ondelete='SET NULL'), default=None, comment='部门关联ID'

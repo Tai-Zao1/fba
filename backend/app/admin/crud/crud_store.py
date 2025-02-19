@@ -69,7 +69,6 @@ class CRUDStore(CRUDPlus[Store]):
             .join(ParentAddress, self.model.province_id == ParentAddress.c.id)
             .join(CityAddress, self.model.city_id == CityAddress.c.id)
             .join(AreaAddress, self.model.area_id == AreaAddress.c.id)
-            .where(User.store_admin == True)
             .order_by(desc(self.model.id))
         )
         where_list = []
@@ -118,7 +117,7 @@ class CRUDStore(CRUDPlus[Store]):
             'store_id': store_id,
             'is_staff': True,
             'user_type': '20',
-            'store_admin': 1
+            'is_superuser': 1
         }
 
         new_user = User(**user_dict)

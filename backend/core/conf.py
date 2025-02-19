@@ -76,10 +76,10 @@ class Settings(BaseSettings):
     JWT_USER_REDIS_EXPIRE_SECONDS: int = 60 * 60 * 24 * 7
 
     # RBAC
-    RBAC_ROLE_MENU_MODE: bool = False
+    RBAC_ROLE_MENU_MODE: bool = True
     RBAC_ROLE_MENU_EXCLUDE: list[str] = [
         'sys:monitor:redis',
-        'sys:monitor:server',
+        'sys:monitor:server'
     ]
 
     # Cookies
