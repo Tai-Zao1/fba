@@ -246,12 +246,5 @@ class UserService:
                 await redis_client.delete_prefix(key)
             return count
 
-    @staticmethod
-    async def get_current_user_token(request: Request):
-        user = request.user
-        if not user:
-            raise errors.NotFoundError(msg='用户不存在')
-        return user
-
 
 user_service: UserService = UserService()

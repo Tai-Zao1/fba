@@ -4,7 +4,7 @@ from sqlalchemy import Select
 from backend.app.admin.crud.crud_store import store_dao
 from backend.app.admin.schema.dept import CreateDeptParam
 from backend.app.admin.schema.role import CreateRoleParam
-from backend.app.admin.schema.store import CreateStoreParam
+from backend.app.admin.schema.store import CreateStoreParam, ReviewStoreParam
 from backend.app.admin.schema.user import AddUserParam
 from backend.app.admin.service.user_service import user_service
 from backend.common.exception import errors
@@ -13,6 +13,7 @@ from backend.database.db import async_db_session
 from backend.app.admin.crud.crud_user import user_dao
 from backend.app.admin.crud.crud_dept import dept_dao
 from backend.app.admin.crud.crud_role import role_dao
+
 
 class StoreService:
     @staticmethod
@@ -28,7 +29,7 @@ class StoreService:
     @staticmethod
     async def add(*, request: Request, obj: CreateStoreParam) -> None:
         async with async_db_session.begin() as db:
-        # 验证权限
+            # 验证权限
             superuser_verify(request)
             # 验证手机号和商户编码
             phone = await user_dao.check_phone(db, obj.phone)
@@ -38,7 +39,7 @@ class StoreService:
             if store_code:
                 raise errors.ForbiddenError(msg='商户编码已存在')
             # 创建商户
-            store = await store_dao.add(db, obj)
+            store = await store_dao.add(db, obj, request.user.id)
             # 准备用户信息
             username = obj.username or obj.phone
             nickname = '测试' + obj.phone[7:11]
@@ -69,5 +70,23 @@ class StoreService:
                 dept_id=dept.id,
                 role_id=role.id
             )
+
+    @staticmethod
+    async def review(*, request: Request, obj: ReviewStoreParam) -> None:
+        async with async_db_session.begin() as db:
+            # 验证权限
+            superuser_verify(request)
+            # 验证工厂是否存在
+            store = await store_dao.check_id(db, obj.id)
+            if not store:
+                raise errors.NotFoundError(msg='商户不存在')
+            if store.status == 1:
+                raise errors.ForbiddenError(msg='商户已审核通过')
+            if obj.status == 2:
+                if not obj.remark:
+                    raise errors.ForbiddenError(msg='审核不通过原因不能为空')
+            # 审核商户
+            await store_dao.review_store(db, obj.id, request.user.id, obj)
+
 
 store_service: StoreService = StoreService()

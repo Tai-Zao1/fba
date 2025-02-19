@@ -1,9 +1,10 @@
-from typing import List
+from datetime import datetime
 
 from pydantic import ConfigDict, Field
 
-from backend.app.admin.schema.user import AuthSchemaBase, UserStoreIns
+from backend.app.admin.schema.user import AuthSchemaBase
 from backend.common.schema import SchemaBase
+
 
 class StoreSchema(SchemaBase):
     name: str
@@ -16,25 +17,28 @@ class GetStoreInfoList(StoreSchema):
     """
     model_config = ConfigDict(from_attributes=True)
 
-    id: int = Field(...)
-    name: str = Field(...)
-    code: str = Field(...)
-    status: int = Field(...)
-    province_id: int = Field(alias="provinceId")
-    city_id: int = Field(alias="cityId")
-    area_id: int = Field(alias="areaId")
+    id: int
+    status: int
+    created_by: int | None = None
+    created_time: datetime | None = None
+    updated_by: int | None = None
+    updated_time: datetime | None = None
+    province_id: int
+    city_id: int
+    area_id: int
     address: str | None = None
     logo: str | None = None
-    
+
     # 地址信息
-    province_name: str = Field(alias="provinceName")
-    city_name: str = Field(alias="cityName")
-    area_name: str = Field(alias="areaName")
+    province_name: str
+    city_name: str
+    area_name: str
 
     # 用户信息
-    user_id: int = Field(alias="userId")
-    username: str = Field(alias="username")
-    phone: str = Field(alias="phone")
+    user_id: int
+    username: str
+    phone: str
+
 
 class CreateStoreParam(StoreSchema):
     """
@@ -47,6 +51,9 @@ class CreateStoreParam(StoreSchema):
     area_id: int
     address: str | None = None
     logo: str | None = None
+    created_ty: int | None = None
+    updated_ty: int | None = None
+
 
 class CreateStoreUserParam(AuthSchemaBase):
     """
@@ -54,3 +61,12 @@ class CreateStoreUserParam(AuthSchemaBase):
     """
     username: str | None = None
     nickname: str | None = None
+
+
+class ReviewStoreParam(SchemaBase):
+    """
+    审核店铺
+    """
+    id: int
+    remark: str | None = None
+    status: int = Field(description='1:审核通过， 2：审核不通过')

@@ -1,12 +1,9 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query, Request
+from fastapi import APIRouter, Query, Request
 
-from backend.app.admin.schema.store import CreateStoreParam, GetStoreInfoList
-from backend.app.admin.schema.user import AddUserParam, GetCurrentUserInfoDetail
-from backend.app.admin.service.user_service import user_service
+from backend.app.admin.schema.store import CreateStoreParam, GetStoreInfoList, ReviewStoreParam
 from backend.app.admin.service.store_service import store_service
-from backend.app.admin.service.user_service import UserService
 from backend.common.pagination import DependsPagination, PageData, paging_data
 from backend.common.response.response_schema import ResponseSchemaModel, response_base
 from backend.common.security.jwt import DependsJwtAuth
@@ -28,8 +25,14 @@ async def list_store(
     store_page = await paging_data(db, store_select)
     return response_base.success(data=store_page)
 
+
 @router.post("/create", summary='创建店铺', dependencies=[DependsJwtAuth])
-async def create_store(request: Request, obj: CreateStoreParam,
-                       current_user: GetCurrentUserInfoDetail = Depends(UserService.get_current_user_token)) -> ResponseSchemaModel:
+async def create_store(request: Request, obj: CreateStoreParam) -> ResponseSchemaModel:
     await store_service.add(request=request, obj=obj)
+    return response_base.success()
+
+
+@router.post("/review", summary='审核店铺', dependencies=[DependsJwtAuth])
+async def review_store(request: Request, obj: ReviewStoreParam) -> ResponseSchemaModel:
+    await store_service.review(request=request, obj=obj)
     return response_base.success()

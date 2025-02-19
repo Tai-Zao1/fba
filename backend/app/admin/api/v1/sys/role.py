@@ -28,12 +28,9 @@ router = APIRouter()
 
 
 @router.get('/all', summary='获取所有角色', dependencies=[DependsJwtAuth])
-async def get_all_roles(current_user: GetCurrentUserInfoDetail = Depends(UserService.get_current_user_token)) -> \
+async def get_all_roles(request: Request) -> \
         ResponseSchemaModel[list[GetRoleDetail]]:
-    roles = await role_service.get_all(store_id=current_user.store_id)
-    # 打印调试信息
-    for role in roles:
-        print(f"Role ID: {role.id}, Store ID: {role.store_id}, Name: {role.name}")
+    roles = await role_service.get_all(store_id=request.user.store_id)
     data = select_list_serialize(roles)
     return response_base.success(data=data)
 
@@ -90,10 +87,10 @@ async def get_pagination_roles(
         DependsRBAC,
     ],
 )
-async def create_role(obj: CreateRoleParam,
-                      current_user: GetCurrentUserInfoDetail = Depends(UserService.get_current_user_token)
-                      ) -> ResponseModel:
-    store_id = current_user.store_id
+async def create_role(
+        request: Request,
+        obj: CreateRoleParam) -> ResponseModel:
+    store_id = request.user.store_id
     obj.store_id = store_id
     await role_service.create(obj=obj)
     return response_base.success()
@@ -109,9 +106,9 @@ async def create_role(obj: CreateRoleParam,
 )
 async def update_role(pk: Annotated[int, Path(...)],
                       obj: UpdateRoleParam,
-                      current_user: GetCurrentUserInfoDetail = Depends(UserService.get_current_user_token)
+                      request: Request
                       ) -> ResponseModel:
-    store_id = current_user.store_id
+    store_id = request.user.store_id
     obj.store_id = store_id
     count = await role_service.update(pk=pk, obj=obj)
     if count > 0:
@@ -130,9 +127,8 @@ async def update_role(pk: Annotated[int, Path(...)],
 async def update_role_menus(
         request: Request,
         pk: Annotated[int, Path(...)], menu_ids: UpdateRoleMenuParam,
-        current_user: GetCurrentUserInfoDetail = Depends(UserService.get_current_user_token)
 ) -> ResponseModel:
-    store_id = current_user.store_id
+    store_id = request.user.store_id
     count = await role_service.update_role_menu(request=request, pk=pk, menu_ids=menu_ids, store_id=store_id)
     if count > 0:
         return response_base.success()
@@ -148,10 +144,9 @@ async def update_role_menus(
     ],
 )
 async def update_role_rules(
-        request: Request, pk: Annotated[int, Path(...)], rule_ids: UpdateRoleRuleParam,
-        current_user: GetCurrentUserInfoDetail = Depends(UserService.get_current_user_token)
+        request: Request, pk: Annotated[int, Path(...)], rule_ids: UpdateRoleRuleParam
 ) -> ResponseModel:
-    store_id = current_user.store_id
+    store_id = request.user.store_id
     count = await role_service.update_role_rule(request=request, pk=pk, rule_ids=rule_ids, store_id=store_id)
     if count > 0:
         return response_base.success()
@@ -166,12 +161,8 @@ async def update_role_rules(
         DependsRBAC,
     ],
 )
-async def delete_role(request: Request,
-                      pk: Annotated[list[int],
-                      Query(...)],
-                      current_user: GetCurrentUserInfoDetail = Depends(UserService.get_current_user_token)
-                      ) -> ResponseModel:
-    store_id = current_user.store_id
+async def delete_role(request: Request, pk: Annotated[list[int], Query(...)]) -> ResponseModel:
+    store_id = request.user.store_id
     count = await role_service.delete(request=request, pk=pk, store_id=store_id)
     if count > 0:
         return response_base.success()

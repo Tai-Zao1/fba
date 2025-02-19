@@ -19,9 +19,9 @@ router = APIRouter()
 
 @router.get('/{pk}', summary='获取部门详情', dependencies=[DependsJwtAuth])
 async def get_dept(pk: Annotated[int, Path(...)],
-                   current_user: GetCurrentUserInfoDetail = Depends(UserService.get_current_user_token)
+                   request: Request
                    ) -> ResponseSchemaModel[GetDeptDetail]:
-    store_id = current_user.store_id
+    store_id = request.user.store_id
     dept = await dept_service.get(pk=pk, store_id=store_id)
     data = GetDeptDetail(**select_as_dict(dept))
     return response_base.success(data=data)
@@ -29,13 +29,14 @@ async def get_dept(pk: Annotated[int, Path(...)],
 
 @router.get('', summary='获取所有部门展示树', dependencies=[DependsJwtAuth])
 async def get_all_depts_tree(
+        request: Request,
         name: Annotated[str | None, Query()] = None,
         leader: Annotated[str | None, Query()] = None,
         phone: Annotated[str | None, Query()] = None,
         status: Annotated[int | None, Query()] = None,
-        current_user: GetCurrentUserInfoDetail = Depends(UserService.get_current_user_token)
+
 ) -> ResponseSchemaModel[list[dict[str, Any]]]:
-    store_id = current_user.store_id
+    store_id = request.user.store_id
     dept = await dept_service.get_dept_tree(name=name, leader=leader, phone=phone, status=status, store_id=store_id)
     return response_base.success(data=dept)
 
@@ -48,10 +49,8 @@ async def get_all_depts_tree(
         DependsRBAC,
     ],
 )
-async def create_dept(obj: CreateDeptParam,
-                      current_user: GetCurrentUserInfoDetail = Depends(UserService.get_current_user_token)
-                      ) -> ResponseModel:
-    store_id = current_user.store_id
+async def create_dept(request: Request, obj: CreateDeptParam) -> ResponseModel:
+    store_id = request.user.store_id
     obj.store_id = store_id
     await dept_service.create(obj=obj)
     return response_base.success()
