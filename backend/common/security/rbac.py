@@ -37,7 +37,7 @@ async def rbac_verify(request: Request, _token: str = DependsJwtAuth) -> None:
 
     # 检测用户所属角色菜单
     if not any(len(role.menus) > 0 for role in user_roles):
-        raise AuthorizationError(msg='用户未分配菜单，请联系系统管理员')
+        raise AuthorizationError(msg='用户未分配权限，请联系系统管理员')
 
     # 检测后台管理操作权限
     method = request.method

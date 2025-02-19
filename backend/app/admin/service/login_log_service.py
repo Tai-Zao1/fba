@@ -23,7 +23,7 @@ class LoginLogService:
         db: AsyncSession,
         request: Request,
         user_uuid: str,
-        username: str,
+        phone: str,
         login_time: datetime,
         status: int,
         msg: str,
@@ -31,7 +31,7 @@ class LoginLogService:
         try:
             obj_in = CreateLoginLogParam(
                 user_uuid=user_uuid,
-                username=username,
+                phone=phone,
                 status=status,
                 ip=request.state.ip,
                 country=request.state.country,

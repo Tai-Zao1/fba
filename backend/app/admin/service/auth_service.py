@@ -32,8 +32,8 @@ from backend.utils.timezone import timezone
 
 class AuthService:
     @staticmethod
-    async def user_verify(db: AsyncSession, username: str, password: str) -> User:
-        user = await user_dao.get_by_username(db, username)
+    async def user_verify(db: AsyncSession, phone: str, password: str) -> User:
+        user = await user_dao.get_by_phone(db, phone)
         if not user:
             raise errors.NotFoundError(msg='用户名或密码有误')
         elif not password_verify(password, user.password):
@@ -60,7 +60,9 @@ class AuthService:
         async with async_db_session.begin() as db:
             user = None
             try:
-                user = await self.user_verify(db, obj.username, obj.password)
+                user = await self.user_verify(db, obj.phone, obj.password)
+                if user.user_type != '00':
+                    raise errors.AuthorizationError(msg='您没有权限登录')
                 # 获取字典，判断是否需要传验证码
                 captcha_dict = await dict_type_dao.get_by_code(db, code='captcha_code')
                 if captcha_dict.status == 1:
@@ -70,7 +72,7 @@ class AuthService:
                     if captcha_code.lower() != obj.captcha.lower():
                         raise errors.CustomError(error=CustomErrorCode.CAPTCHA_ERROR)
                     await redis_client.delete(f'{admin_settings.CAPTCHA_LOGIN_REDIS_PREFIX}:{request.state.ip}')
-                await user_dao.update_login_time(db, obj.username)
+                await user_dao.update_login_time(db, obj.phone)
                 await db.refresh(user)
                 a_token = await create_access_token(
                     str(user.id),
@@ -104,7 +106,7 @@ class AuthService:
                         db=db,
                         request=request,
                         user_uuid=user.uuid if user else uuid4_str(),
-                        username=obj.username,
+                        phone=obj.phone,
                         login_time=timezone.now(),
                         status=LoginLogStatusType.fail.value,
                         msg=e.msg,
@@ -121,7 +123,7 @@ class AuthService:
                         db=db,
                         request=request,
                         user_uuid=user.uuid,
-                        username=obj.username,
+                        phone=obj.phone,
                         login_time=timezone.now(),
                         status=LoginLogStatusType.success.value,
                         msg='登录成功',

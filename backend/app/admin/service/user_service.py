@@ -104,9 +104,9 @@ class UserService:
             if not input_user:
                 raise errors.NotFoundError(msg='用户不存在')
             if input_user.username != obj.username:
-                _username = await user_dao.get_by_username(db, obj.username)
-                if _username:
-                    raise errors.ForbiddenError(msg='用户名已注册')
+                _phone = await user_dao.get_by_phone(db, obj.phone)
+                if _phone:
+                    raise errors.ForbiddenError(msg='手机号已注册')
             if input_user.nickname != obj.nickname:
                 nickname = await user_dao.get_by_nickname(db, obj.nickname)
                 if nickname:
@@ -136,12 +136,12 @@ class UserService:
             await redis_client.delete(f'{settings.JWT_USER_REDIS_PREFIX}:{input_user.id}')
 
     @staticmethod
-    async def update_avatar(*, request: Request, username: str, avatar: AvatarParam) -> int:
+    async def update_avatar(*, request: Request, phone: str, avatar: AvatarParam) -> int:
         async with async_db_session.begin() as db:
             if not request.user.is_superuser:
-                if request.user.username != username:
+                if request.user.phone != phone:
                     raise errors.AuthorizationError
-            input_user = await user_dao.get_by_username(db, username)
+            input_user = await user_dao.get_by_phone(db, phone)
             if not input_user:
                 raise errors.NotFoundError(msg='用户不存在')
             count = await user_dao.update_avatar(db, input_user.id, avatar)
@@ -232,9 +232,9 @@ class UserService:
                 return count
 
     @staticmethod
-    async def delete(*, username: str) -> int:
+    async def delete(*, phone: str) -> int:
         async with async_db_session.begin() as db:
-            input_user = await user_dao.get_by_username(db, username)
+            input_user = await user_dao.get_by_phone(db, phone)
             if not input_user:
                 raise errors.NotFoundError(msg='用户不存在')
             count = await user_dao.delete(db, input_user.id)

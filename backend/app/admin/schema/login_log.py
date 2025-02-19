@@ -9,7 +9,7 @@ from backend.common.schema import SchemaBase
 
 class LoginLogSchemaBase(SchemaBase):
     user_uuid: str
-    username: str
+    phone: str
     status: int
     ip: str
     country: str | None

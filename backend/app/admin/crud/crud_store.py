@@ -69,6 +69,7 @@ class CRUDStore(CRUDPlus[Store]):
             .join(ParentAddress, self.model.province_id == ParentAddress.c.id)
             .join(CityAddress, self.model.city_id == CityAddress.c.id)
             .join(AreaAddress, self.model.area_id == AreaAddress.c.id)
+            .where(User.store_superuser == True)
             .order_by(desc(self.model.id))
         )
         where_list = []
@@ -117,7 +118,7 @@ class CRUDStore(CRUDPlus[Store]):
             'store_id': store_id,
             'is_staff': True,
             'user_type': '20',
-            'is_superuser': 1
+            'store_superuser': 1
         }
 
         new_user = User(**user_dict)
@@ -144,13 +145,5 @@ class CRUDStore(CRUDPlus[Store]):
         dict_obj["updated_by"] = updated_by
         return await self.update_model(db, store_id, dict_obj)
 
-    async def update_store_user(self, db: AsyncSession, store_id: int, updated_by: str, obj: UpdateStoreParam) -> int:
-        """
-        更新商户用户信息
-        param store_id:
-        """
-        updated_user = {
-
-        }
 
 store_dao: CRUDStore = CRUDStore(Store)

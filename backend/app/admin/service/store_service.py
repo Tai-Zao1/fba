@@ -23,11 +23,18 @@ class StoreService:
                          city_id: int | None,
                          area_id: int | None,
                          status: int | None) -> Select:
+        """
+        获取商户列表
+        """
+
         return await store_dao.get_list(store_name=store_name, province_id=province_id, city_id=city_id,
                                         area_id=area_id, status=status)
 
     @staticmethod
     async def add(*, request: Request, obj: CreateStoreParam) -> None:
+        """
+        新增商户
+        """
         async with async_db_session.begin() as db:
             # 验证权限
             superuser_verify(request)
@@ -73,6 +80,9 @@ class StoreService:
 
     @staticmethod
     async def review(*, request: Request, obj: ReviewStoreParam) -> None:
+        """
+        审核商户
+        """
         async with async_db_session.begin() as db:
             # 验证权限
             superuser_verify(request)
@@ -90,6 +100,9 @@ class StoreService:
 
     @staticmethod
     async def update(*, request: Request, obj: UpdateStoreParam):
+        """
+        更新商户
+        """
         async with async_db_session.begin() as db:
             # 验证权限
             superuser_verify(request)

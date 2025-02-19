@@ -31,15 +31,15 @@ class CRUDUser(CRUDPlus[User]):
         """
         return await self.select_model(db, user_id)
 
-    async def get_by_username(self, db: AsyncSession, username: str) -> User | None:
+    async def get_by_phone(self, db: AsyncSession, phone: str) -> User | None:
         """
         通过 username 获取用户
 
         :param db:
-        :param username:
+        :param phone:
         :return:
         """
-        return await self.select_model_by_column(db, username=username)
+        return await self.select_model_by_column(db, phone=phone)
 
     async def get_by_nickname(self, db: AsyncSession, nickname: str) -> User | None:
         """
@@ -51,7 +51,7 @@ class CRUDUser(CRUDPlus[User]):
         """
         return await self.select_model_by_column(db, nickname=nickname)
 
-    async def update_login_time(self, db: AsyncSession, username: str) -> int:
+    async def update_login_time(self, db: AsyncSession, phone: str) -> int:
         """
         更新用户登录时间
 
@@ -59,7 +59,7 @@ class CRUDUser(CRUDPlus[User]):
         :param username:
         :return:
         """
-        return await self.update_model_by_column(db, {'last_login_time': timezone.now()}, username=username)
+        return await self.update_model_by_column(db, {'last_login_time': timezone.now()}, phone=phone)
 
     async def create(self, db: AsyncSession, obj: RegisterUserParam, *, social: bool = False) -> None:
         """
