@@ -156,7 +156,7 @@ def register_static_file(app: FastAPI):
 
     :param app: FastAPI 应用实例
     """
-    if settings.FASTAPI_STATIC_FILES:
+    if settings.ADMIN_STATIC_FILES:
         from fastapi.staticfiles import StaticFiles
 
         app.mount('/static', StaticFiles(directory=STATIC_DIR), name='static')

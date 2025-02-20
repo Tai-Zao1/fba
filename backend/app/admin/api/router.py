@@ -11,7 +11,7 @@ from backend.app.admin.api.v1.common import router as common_router
 from backend.app.admin.api.v1.store import router as store_router
 from backend.core.conf import settings
 
-v1 = APIRouter(prefix=settings.FASTAPI_API_V1_PATH)
+v1 = APIRouter(prefix=settings.ADMIN_API_PATH)
 
 v1.include_router(auth_router)
 # v1.include_router(oauth2_router)

@@ -50,7 +50,7 @@ class Settings(BaseSettings):
 
     STORE_API_PATH: str = '/store'
     STORE_TITLE: str = 'store'
-    STOREI_VERSION: str = '0.0.1'
+    STORE_VERSION: str = '0.0.1'
     STORE_DESCRIPTION: str = 'FastAPI Best Architecture'
     STORE_DOCS_URL: str = '/docs'
     STORE_REDOC_URL: str = '/redoc'
