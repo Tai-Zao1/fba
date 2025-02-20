@@ -5,7 +5,7 @@ from typing import Any
 from fastapi import Request
 
 from backend.app.admin.crud.crud_dept import dept_dao
-from backend.app.model.dept import Dept
+from backend.app.admin.model import Dept
 from backend.app.admin.schema.dept import CreateDeptParam, UpdateDeptParam
 from backend.common.exception import errors
 from backend.core.conf import settings

@@ -3,7 +3,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy_crud_plus import CRUDPlus
 
-from backend.app.model.user_social import UserSocial
+from backend.app.admin.model import UserSocial
 from backend.app.admin.schema.user_social import CreateUserSocialParam
 from backend.common.enums import UserSocialType
 

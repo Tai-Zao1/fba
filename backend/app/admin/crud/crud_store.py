@@ -3,10 +3,10 @@ from sqlalchemy import Select, select, desc, and_, alias
 from sqlalchemy_crud_plus import CRUDPlus
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.app.model.address import Address
-from backend.app.model.role import Role
-from backend.app.model.store import Store
-from backend.app.model.user import User
+from backend.app.admin.model.address import Address
+from backend.app.admin.model.role import Role
+from backend.app.admin.model.store import Store
+from backend.app.admin.model.user import User
 from backend.app.admin.schema.store import CreateStoreParam, ReviewStoreParam, UpdateStoreParam
 from backend.common.security.jwt import get_hash_password
 

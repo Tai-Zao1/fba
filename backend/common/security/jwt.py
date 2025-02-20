@@ -14,7 +14,7 @@ from pwdlib.hashers.bcrypt import BcryptHasher
 from pydantic_core import from_json
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.app.model.user import User
+from backend.app.admin.model import User
 from backend.app.admin.schema.user import CurrentUserIns
 from backend.common.dataclasses import AccessToken, NewToken, RefreshToken, TokenPayload
 from backend.common.exception.errors import AuthorizationError, TokenError

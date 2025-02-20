@@ -4,7 +4,7 @@ from sqlalchemy import Select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy_crud_plus import CRUDPlus
 
-from backend.app.model.login_log import LoginLog
+from backend.app.admin.model import LoginLog
 from backend.app.admin.schema.login_log import CreateLoginLogParam
 
 

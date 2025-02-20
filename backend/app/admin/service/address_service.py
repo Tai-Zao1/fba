@@ -1,5 +1,5 @@
 from backend.app.admin.crud.crud_address import address_dao
-from backend.app.model.address import Address
+from backend.app.admin.model.address import Address
 from backend.database.db import async_db_session
 
 

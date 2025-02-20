@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import random
 
 from fastapi import Request
 from sqlalchemy import Select
@@ -7,7 +8,7 @@ from sqlalchemy import Select
 from backend.app.admin.crud.crud_dept import dept_dao
 from backend.app.admin.crud.crud_role import role_dao
 from backend.app.admin.crud.crud_user import user_dao
-from backend.app.model.user import User
+from backend.app.admin.model import User
 from backend.app.admin.schema.user import (
     AddUserParam,
     AvatarParam,
