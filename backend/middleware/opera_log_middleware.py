@@ -25,7 +25,7 @@ class OperaLogMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> Response:
         # 排除记录白名单
         path = request.url.path
-        if path in settings.OPERA_LOG_PATH_EXCLUDE or not path.startswith(f'{settings.FASTAPI_API_V1_PATH}'):
+        if path in settings.OPERA_LOG_PATH_EXCLUDE or not path.startswith(f'{settings.ADMIN_API_PATH}'):
             return await call_next(request)
 
         # 请求解析

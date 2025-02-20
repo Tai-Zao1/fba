@@ -12,7 +12,7 @@ admin路由
 router = APIRouter()
 
 router.include_router(admin_v1)
-router.include_router(generator_v1)
+# router.include_router(generator_v1)
 router.include_router(task_v1)
 
 '''
