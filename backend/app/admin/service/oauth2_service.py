@@ -66,6 +66,7 @@ class OAuth2Service:
             access_token = await jwt.create_access_token(
                 str(sys_user_id),
                 sys_user.is_multi_login,
+                sys_user.user_type,
                 # extra info
                 username=sys_user.username,
                 nickname=sys_user.nickname,
@@ -75,7 +76,7 @@ class OAuth2Service:
                 browser=request.state.browser,
                 device=request.state.device,
             )
-            refresh_token = await jwt.create_refresh_token(str(sys_user_id), multi_login=sys_user.is_multi_login)
+            refresh_token = await jwt.create_refresh_token(str(sys_user_id), multi_login=sys_user.is_multi_login, user_type=sys_user.user_type)
             await user_dao.update_login_time(db, sys_user.phone)
             await db.refresh(sys_user)
             login_log = dict(

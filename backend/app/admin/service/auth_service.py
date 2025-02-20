@@ -49,8 +49,10 @@ class AuthService:
             a_token = await create_access_token(
                 str(user.id),
                 user.is_multi_login,
+                user.user_type,
                 # extra info
                 login_type='swagger',
+
             )
             return a_token.access_token, user
 
@@ -77,6 +79,7 @@ class AuthService:
                 a_token = await create_access_token(
                     str(user.id),
                     user.is_multi_login,
+                    user.user_type,
                     # extra info
                     username=user.username,
                     nickname=user.nickname,
@@ -86,7 +89,7 @@ class AuthService:
                     browser=request.state.browser,
                     device=request.state.device,
                 )
-                r_token = await create_refresh_token(str(user.id), user.is_multi_login)
+                r_token = await create_refresh_token(str(user.id), user.is_multi_login, user.user_type)
                 response.set_cookie(
                     key=settings.COOKIE_REFRESH_TOKEN_KEY,
                     value=r_token.refresh_token,
@@ -160,6 +163,7 @@ class AuthService:
                 token=token,
                 refresh_token=refresh_token,
                 multi_login=user.is_multi_login,
+                user_type=user.user_type,
                 # extra info
                 username=user.username,
                 nickname=user.nickname,

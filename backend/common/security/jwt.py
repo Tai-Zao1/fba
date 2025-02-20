@@ -52,19 +52,20 @@ def password_verify(plain_password: str, hashed_password: str) -> bool:
     return password_hash.verify(plain_password, hashed_password)
 
 
-async def create_access_token(user_id: str, multi_login: bool, **kwargs) -> AccessToken:
+async def create_access_token(user_id: str, multi_login: bool, user_type: str, **kwargs) -> AccessToken:
     """
     Generate encryption token
 
     :param user_id: The user id of the JWT
     :param multi_login: Multipoint login for user
     :param kwargs: Token extra information
+    :param user_type
     :return:
     """
     expire = timezone.now() + timedelta(seconds=settings.TOKEN_EXPIRE_SECONDS)
     session_uuid = str(uuid4())
     access_token = jwt.encode(
-        {'session_uuid': session_uuid, 'exp': expire, 'sub': user_id},
+        {'session_uuid': session_uuid, 'exp': expire, 'sub': user_id, 'user_type': user_type},
         settings.TOKEN_SECRET_KEY,
         settings.TOKEN_ALGORITHM,
     )
@@ -89,17 +90,18 @@ async def create_access_token(user_id: str, multi_login: bool, **kwargs) -> Acce
     return AccessToken(access_token=access_token, access_token_expire_time=expire, session_uuid=session_uuid)
 
 
-async def create_refresh_token(user_id: str, multi_login: bool) -> RefreshToken:
+async def create_refresh_token(user_id: str, multi_login: bool, user_type: str) -> RefreshToken:
     """
     Generate encryption refresh token, only used to create a new token
 
     :param user_id: The user id of the JWT
     :param multi_login: multipoint login for user
+    :param user_type
     :return:
     """
     expire = timezone.now() + timedelta(seconds=settings.TOKEN_REFRESH_EXPIRE_SECONDS)
     refresh_token = jwt.encode(
-        {'exp': expire, 'sub': user_id},
+        {'exp': expire, 'sub': user_id, 'user_type': user_type},
         settings.TOKEN_SECRET_KEY,
         settings.TOKEN_ALGORITHM,
     )
@@ -116,20 +118,21 @@ async def create_refresh_token(user_id: str, multi_login: bool) -> RefreshToken:
     return RefreshToken(refresh_token=refresh_token, refresh_token_expire_time=expire)
 
 
-async def create_new_token(user_id: str, refresh_token: str, multi_login: bool, **kwargs) -> NewToken:
+async def create_new_token(user_id: str, refresh_token: str, multi_login: bool, user_type: str, **kwargs) -> NewToken:
     """
     Generate new token
 
     :param user_id:
     :param refresh_token:
     :param multi_login:
+    :param user_type:
     :param kwargs: Access token extra information
     :return:
     """
     redis_refresh_token = await redis_client.get(f'{settings.TOKEN_REFRESH_REDIS_PREFIX}:{user_id}:{refresh_token}')
     if not redis_refresh_token or redis_refresh_token != refresh_token:
         raise TokenError(msg='Refresh Token 已过期，请重新登录')
-    new_access_token = await create_access_token(user_id, multi_login, **kwargs)
+    new_access_token = await create_access_token(user_id, multi_login, user_type, **kwargs)
     return NewToken(
         new_access_token=new_access_token.access_token,
         new_access_token_expire_time=new_access_token.access_token_expire_time,

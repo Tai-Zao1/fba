@@ -4,6 +4,7 @@ from typing import Any
 
 from fastapi import Request, Response
 from fastapi.security.utils import get_authorization_scheme_param
+from jose import jwt
 from starlette.authentication import AuthCredentials, AuthenticationBackend, AuthenticationError
 from starlette.requests import HTTPConnection
 
@@ -45,6 +46,18 @@ class JwtAuthMiddleware(AuthenticationBackend):
             return
 
         try:
+            payload = jwt.decode(token, settings.TOKEN_SECRET_KEY, algorithms=[settings.TOKEN_ALGORITHM])
+            token_user_type = ''
+            if payload['user_type'] == '00':
+                token_user_type = 'admin'
+            elif payload['user_type'] == '20':
+                token_user_type = 'store'
+
+            # 获取请求中的端标识，这里假设从请求头中获取
+            request_platform_type = request.app.title
+            if request_platform_type != token_user_type:
+                raise _AuthenticationError(code=403, msg='当前用户无权访问')
+
             user = await jwt_authentication(token)
         except TokenError as exc:
             raise _AuthenticationError(code=exc.code, msg=exc.detail, headers=exc.headers)
