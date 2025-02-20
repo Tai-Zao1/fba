@@ -4,8 +4,8 @@ from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, Path, Query, Request
 
-from backend.app.admin.schema.menu import CreateMenuParam, GetMenuDetail, UpdateMenuParam
-from backend.app.admin.service.menu_service import menu_service
+from backend.app.common.schema.menu import CreateMenuParam, GetMenuDetail, UpdateMenuParam
+from backend.app.common.service.menu_service import menu_service
 from backend.common.response.response_schema import ResponseModel, ResponseSchemaModel, response_base
 from backend.common.security.jwt import DependsJwtAuth
 from backend.common.security.permission import RequestPermission

@@ -6,7 +6,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Path, Query, Request
 
-from backend.app.admin.schema.token import GetTokenDetail, KickOutToken
+from backend.app.common.schema.token import GetTokenDetail, KickOutToken
 from backend.common.enums import StatusType
 from backend.common.response.response_schema import ResponseModel, ResponseSchemaModel, response_base
 from backend.common.security.jwt import DependsJwtAuth, jwt_decode, superuser_verify

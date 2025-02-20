@@ -2,8 +2,8 @@ from typing import Annotated
 
 from fastapi import APIRouter, Query, Request, Depends
 
-from backend.app.admin.schema.store import CreateStoreParam, GetStoreInfoList, ReviewStoreParam, UpdateStoreParam
-from backend.app.admin.service.store_service import store_service
+from backend.app.common.schema.store import CreateStoreParam, GetStoreInfoList, ReviewStoreParam, UpdateStoreParam
+from backend.app.common.service.store_service import store_service
 from backend.common.pagination import DependsPagination, PageData, paging_data
 from backend.common.response.response_schema import ResponseSchemaModel, response_base
 from backend.common.security.jwt import DependsJwtAuth

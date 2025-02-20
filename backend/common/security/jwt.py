@@ -14,8 +14,8 @@ from pwdlib.hashers.bcrypt import BcryptHasher
 from pydantic_core import from_json
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.app.admin.model import User
-from backend.app.admin.schema.user import CurrentUserIns
+from backend.app.common.model import User
+from backend.app.common.schema.user import CurrentUserIns
 from backend.common.dataclasses import AccessToken, NewToken, RefreshToken, TokenPayload
 from backend.common.exception.errors import AuthorizationError, TokenError
 from backend.core.conf import settings
@@ -182,7 +182,7 @@ async def get_current_user(db: AsyncSession, pk: int) -> User:
     :param pk:
     :return:
     """
-    from backend.app.admin.crud.crud_user import user_dao
+    from backend.app.common.crud.crud_user import user_dao
 
     user = await user_dao.get_with_relation(db, user_id=pk)
     if not user:

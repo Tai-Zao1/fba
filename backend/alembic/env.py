@@ -19,7 +19,7 @@ from backend.database.db import SQLALCHEMY_DATABASE_URL
 from backend.plugin.tools import get_plugin_models
 
 # import your new model here
-from backend.app.admin.model import *  # noqa: F401
+from backend.app.common.model import *  # noqa: F401
 from backend.app.generator.model import *  # noqa: F401
 
 # import plugin model

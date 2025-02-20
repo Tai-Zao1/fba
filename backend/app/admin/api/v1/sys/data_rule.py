@@ -4,8 +4,8 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Path, Query, Request
 
-from backend.app.admin.schema.data_rule import CreateDataRuleParam, GetDataRuleDetail, UpdateDataRuleParam
-from backend.app.admin.service.data_rule_service import data_rule_service
+from backend.app.common.schema.data_rule import CreateDataRuleParam, GetDataRuleDetail, UpdateDataRuleParam
+from backend.app.common.service.data_rule_service import data_rule_service
 from backend.common.pagination import DependsPagination, PageData, paging_data
 from backend.common.response.response_schema import ResponseModel, ResponseSchemaModel, response_base
 from backend.common.security.jwt import DependsJwtAuth

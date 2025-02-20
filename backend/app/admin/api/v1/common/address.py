@@ -1,8 +1,8 @@
 from typing import Annotated
 from fastapi import APIRouter, Path
 
-from backend.app.admin.schema.address import GetAddressDetail
-from backend.app.admin.service.address_service import address_service
+from backend.app.common.schema.address import GetAddressDetail
+from backend.app.common.service.address_service import address_service
 from backend.common.response.response_schema import ResponseSchemaModel, response_base
 
 router = APIRouter()

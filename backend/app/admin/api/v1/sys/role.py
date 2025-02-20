@@ -4,18 +4,16 @@ from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, Path, Query, Request
 
-from backend.app.admin.schema.role import (
+from backend.app.common.schema.role import (
     CreateRoleParam,
     GetRoleDetail,
     UpdateRoleMenuParam,
     UpdateRoleParam,
     UpdateRoleRuleParam,
 )
-from backend.app.admin.schema.user import GetCurrentUserInfoDetail
-from backend.app.admin.service.data_rule_service import data_rule_service
-from backend.app.admin.service.menu_service import menu_service
-from backend.app.admin.service.role_service import role_service
-from backend.app.admin.service.user_service import UserService
+from backend.app.common.service.data_rule_service import data_rule_service
+from backend.app.common.service.menu_service import menu_service
+from backend.app.common.service.role_service import role_service
 from backend.common.pagination import DependsPagination, PageData, paging_data
 from backend.common.response.response_schema import ResponseModel, ResponseSchemaModel, response_base
 from backend.common.security.jwt import DependsJwtAuth

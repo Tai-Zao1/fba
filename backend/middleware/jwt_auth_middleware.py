@@ -8,7 +8,7 @@ from jose import jwt
 from starlette.authentication import AuthCredentials, AuthenticationBackend, AuthenticationError
 from starlette.requests import HTTPConnection
 
-from backend.app.admin.schema.user import CurrentUserIns
+from backend.app.common.schema.user import CurrentUserIns
 from backend.common.exception.errors import TokenError
 from backend.common.log import log
 from backend.common.security.jwt import jwt_authentication

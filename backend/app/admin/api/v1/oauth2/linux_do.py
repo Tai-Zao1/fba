@@ -6,7 +6,7 @@ from fastapi_oauth20 import FastAPIOAuth20, LinuxDoOAuth20
 from starlette.responses import RedirectResponse
 
 from backend.app.admin.conf import admin_settings
-from backend.app.admin.service.oauth2_service import oauth2_service
+from backend.app.common.service.oauth2_service import oauth2_service
 from backend.common.enums import UserSocialType
 from backend.common.response.response_schema import ResponseSchemaModel, response_base
 

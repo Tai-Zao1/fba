@@ -6,7 +6,7 @@ from fastapi_limiter.depends import RateLimiter
 from starlette.concurrency import run_in_threadpool
 
 from backend.app.admin.conf import admin_settings
-from backend.app.admin.schema.captcha import GetCaptchaDetail
+from backend.app.common.schema.captcha import GetCaptchaDetail
 from backend.common.response.response_schema import ResponseSchemaModel, response_base
 from backend.database.redis import redis_client
 

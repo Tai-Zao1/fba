@@ -4,10 +4,8 @@ from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, Path, Query, Request
 
-from backend.app.admin.schema.dept import CreateDeptParam, GetDeptDetail, UpdateDeptParam
-from backend.app.admin.schema.user import GetCurrentUserInfoDetail
-from backend.app.admin.service.dept_service import dept_service
-from backend.app.admin.service.user_service import UserService
+from backend.app.common.schema.dept import CreateDeptParam, GetDeptDetail, UpdateDeptParam
+from backend.app.common.service.dept_service import dept_service
 from backend.common.response.response_schema import ResponseModel, ResponseSchemaModel, response_base
 from backend.common.security.jwt import DependsJwtAuth
 from backend.common.security.permission import RequestPermission

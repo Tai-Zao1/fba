@@ -5,7 +5,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Path, Query, Request
 from sqlalchemy.sql.functions import current_user
 
-from backend.app.admin.schema.user import (
+from backend.app.common.schema.user import (
     AddUserParam,
     AvatarParam,
     GetCurrentUserInfoDetail,
@@ -15,7 +15,7 @@ from backend.app.admin.schema.user import (
     UpdateUserParam,
     UpdateUserRoleParam,
 )
-from backend.app.admin.service.user_service import user_service
+from backend.app.common.service.user_service import user_service
 from backend.common.pagination import DependsPagination, paging_data, PageData
 from backend.common.response.response_schema import ResponseModel, ResponseSchemaModel, response_base
 from backend.common.security.jwt import DependsJwtAuth

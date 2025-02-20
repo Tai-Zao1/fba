@@ -4,8 +4,8 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query
 
-from backend.app.admin.schema.login_log import GetLoginLogDetail
-from backend.app.admin.service.login_log_service import login_log_service
+from backend.app.common.schema.login_log import GetLoginLogDetail
+from backend.app.common.service.login_log_service import login_log_service
 from backend.common.pagination import DependsPagination, PageData, paging_data
 from backend.common.response.response_schema import ResponseModel, ResponseSchemaModel, response_base
 from backend.common.security.jwt import DependsJwtAuth

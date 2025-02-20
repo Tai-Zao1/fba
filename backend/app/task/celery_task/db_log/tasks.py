@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from backend.app.admin.service.login_log_service import login_log_service
-from backend.app.admin.service.opera_log_service import opera_log_service
+from backend.app.common.service.login_log_service import login_log_service
+from backend.app.common.service.opera_log_service import opera_log_service
 from backend.app.task.celery import celery_app
 
 
