@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from contextlib import asynccontextmanager
+from functools import lru_cache
 
 import socketio
-
-from asgi_correlation_id import CorrelationIdMiddleware
 from fastapi import Depends, FastAPI
 from fastapi_limiter import FastAPILimiter
 from fastapi_pagination import add_pagination
 from starlette.middleware.authentication import AuthenticationMiddleware
 
+from asgi_correlation_id import CorrelationIdMiddleware
 from backend.common.exception.exception_handler import register_exception
 from backend.common.log import set_customize_logfile, setup_logging
 from backend.core.conf import settings
@@ -31,13 +31,13 @@ async def register_init(app: FastAPI):
     """
     启动初始化
 
-    :return:
+    :param app: FastAPI 应用实例
     """
     # 创建数据库表
     await create_table()
-    # 连接 redis
+    # 连接 Redis
     await redis_client.open()
-    # 初始化 limiter
+    # 初始化限流器
     await FastAPILimiter.init(
         redis=redis_client,
         prefix=settings.REQUEST_LIMITER_REDIS_PREFIX,
@@ -46,26 +46,45 @@ async def register_init(app: FastAPI):
 
     yield
 
-    # 关闭 redis 连接
+    # 关闭 Redis 连接
     await redis_client.close()
-    # 关闭 limiter
+    # 关闭限流器
     await FastAPILimiter.close()
 
 
-def register_app():
-    # FastAPI
+def create_fastapi_app(
+    title: str,
+    version: str,
+    description: str,
+    docs_url: str,
+    redoc_url: str,
+    openapi_url: str,
+    router: object,
+) -> FastAPI:
+    """
+    创建并配置 FastAPI 应用
+
+    :param title: API 文档标题
+    :param version: API 版本
+    :param description: API 描述
+    :param docs_url: Swagger UI URL
+    :param redoc_url: ReDoc URL
+    :param openapi_url: OpenAPI JSON URL
+    :param router: 路由对象
+    :return: 配置完成的 FastAPI 应用实例
+    """
     app = FastAPI(
-        title=settings.FASTAPI_TITLE,
-        version=settings.FASTAPI_VERSION,
-        description=settings.FASTAPI_DESCRIPTION,
-        docs_url=settings.FASTAPI_DOCS_URL,
-        redoc_url=settings.FASTAPI_REDOC_URL,
-        openapi_url=settings.FASTAPI_OPENAPI_URL,
+        title=title,
+        version=version,
+        description=description,
+        docs_url=docs_url,
+        redoc_url=redoc_url,
+        openapi_url=openapi_url,
         default_response_class=MsgSpecJSONResponse,
         lifespan=register_init,
     )
 
-    # socketio
+    # SocketIO
     register_socket_app(app)
 
     # 日志
@@ -78,7 +97,7 @@ def register_app():
     register_middleware(app)
 
     # 路由
-    register_router(app)
+    register_router(app, router)
 
     # 分页
     register_page(app)
@@ -89,11 +108,43 @@ def register_app():
     return app
 
 
+def register_app():
+    """
+    注册 Admin 后台应用
+    """
+    from backend.app.router import router  # 延迟导入避免循环依赖
+
+    return create_fastapi_app(
+        title=settings.ADMIN_TITLE,
+        version=settings.ADMIN_VERSION,
+        description=settings.ADMIN_DESCRIPTION,
+        docs_url=settings.ADMIN_DOCS_URL,
+        redoc_url=settings.ADMIN_REDOC_URL,
+        openapi_url=settings.ADMIN_OPENAPI_URL,
+        router=router,
+    )
+
+
+def register_app2():
+    """
+    注册商家后台应用
+    """
+    from backend.app.router import router2  # 延迟导入避免循环依赖
+
+    return create_fastapi_app(
+        title=settings.STORE_TITLE,
+        version=settings.STORE_VERSION,
+        description=settings.STORE_DESCRIPTION,
+        docs_url=settings.STORE_DOCS_URL,
+        redoc_url=settings.STORE_REDOC_URL,
+        openapi_url=settings.STORE_OPENAPI_URL,
+        router=router2,
+    )
+
+
 def register_logger() -> None:
     """
-    系统日志
-
-    :return:
+    系统日志配置
     """
     setup_logging()
     set_customize_logfile()
@@ -101,10 +152,9 @@ def register_logger() -> None:
 
 def register_static_file(app: FastAPI):
     """
-    静态文件交互开发模式, 生产将自动关闭，生产必须使用 nginx 静态资源服务
+    挂载静态文件（仅在开发模式下启用）
 
-    :param app:
-    :return:
+    :param app: FastAPI 应用实例
     """
     if settings.FASTAPI_STATIC_FILES:
         from fastapi.staticfiles import StaticFiles
@@ -114,27 +164,26 @@ def register_static_file(app: FastAPI):
 
 def register_middleware(app: FastAPI):
     """
-    中间件，执行顺序从下往上
+    注册中间件
 
-    :param app:
-    :return:
+    :param app: FastAPI 应用实例
     """
-    # Opera log (required)
+    # 操作日志中间件
     app.add_middleware(OperaLogMiddleware)
-    # JWT auth (required)
+    # JWT 认证中间件
     app.add_middleware(
         AuthenticationMiddleware, backend=JwtAuthMiddleware(), on_error=JwtAuthMiddleware.auth_exception_handler
     )
-    # Access log
+    # 访问日志中间件（可选）
     if settings.MIDDLEWARE_ACCESS:
         from backend.middleware.access_middleware import AccessMiddleware
 
         app.add_middleware(AccessMiddleware)
-    # State
+    # 状态中间件
     app.add_middleware(StateMiddleware)
-    # Trace ID (required)
+    # 请求 ID 中间件
     app.add_middleware(CorrelationIdMiddleware, validator=False)
-    # CORS: Always at the end
+    # CORS 中间件（可选）
     if settings.MIDDLEWARE_CORS:
         from fastapi.middleware.cors import CORSMiddleware
 
@@ -148,50 +197,63 @@ def register_middleware(app: FastAPI):
         )
 
 
-def register_router(app: FastAPI):
+def register_router(app: FastAPI, router: object):
     """
-    路由
+    注册路由
 
-    :param app: FastAPI
-    :return:
+    :param app: FastAPI 应用实例
+    :param router: 路由对象
     """
     dependencies = [Depends(demo_site)] if settings.DEMO_MODE else None
 
-    # API
-    plugin_router_inject()
-
-    from backend.app.router import router  # 必须在插件路由注入后导入
+    # 插件路由注入（单例模式确保只执行一次）
+    inject_plugin_routers()
 
     app.include_router(router, dependencies=dependencies)
 
-    # Extra
+    # 确保路由名称唯一
     ensure_unique_route_names(app)
     simplify_operation_ids(app)
 
 
+@lru_cache()
+def inject_plugin_routers():
+    """
+    单例模式：确保插件路由仅注入一次
+    """
+    plugin_router_inject()
+
+
 def register_page(app: FastAPI):
     """
-    分页查询
+    注册分页查询
 
-    :param app:
-    :return:
+    :param app: FastAPI 应用实例
     """
     add_pagination(app)
 
 
 def register_socket_app(app: FastAPI):
     """
-    socket 应用
+    注册 SocketIO 应用
 
-    :param app:
-    :return:
+    :param app: FastAPI 应用实例
     """
-    from backend.common.socketio.server import sio
+    sio = lazy_load_socketio()
 
     socket_app = socketio.ASGIApp(
         socketio_server=sio,
         other_asgi_app=app,
-        # 切勿删除此配置：https://github.com/pyropy/fastapi-socketio/issues/51
         socketio_path='/ws/socket.io',
     )
     app.mount('/ws', socket_app)
+
+
+@lru_cache()
+def lazy_load_socketio():
+    """
+    延迟加载 SocketIO
+    """
+    from backend.common.socketio.server import sio
+
+    return sio

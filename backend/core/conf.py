@@ -39,14 +39,23 @@ class Settings(BaseSettings):
     OPERA_LOG_ENCRYPT_SECRET_KEY: str  # 密钥 os.urandom(32), 需使用 bytes.hex() 方法转换为 str
 
     # FastAPI
-    FASTAPI_API_V1_PATH: str = '/api/v1'
-    FASTAPI_TITLE: str = 'FastAPI'
-    FASTAPI_VERSION: str = '0.0.1'
-    FASTAPI_DESCRIPTION: str = 'FastAPI Best Architecture'
-    FASTAPI_DOCS_URL: str = '/docs'
-    FASTAPI_REDOC_URL: str = '/redoc'
-    FASTAPI_OPENAPI_URL: str | None = '/openapi'
-    FASTAPI_STATIC_FILES: bool = True
+    ADMIN_API_PATH: str = '/admin'
+    ADMIN_TITLE: str = 'admin'
+    ADMIN_VERSION: str = '0.0.1'
+    ADMIN_DESCRIPTION: str = 'FastAPI Best Architecture'
+    ADMIN_DOCS_URL: str = '/docs'
+    ADMIN_REDOC_URL: str = '/redoc'
+    ADMIN_OPENAPI_URL: str | None = '/openapi'
+    ADMIN_STATIC_FILES: bool = True
+
+    STORE_API_PATH: str = '/store'
+    STORE_TITLE: str = 'store'
+    STOREI_VERSION: str = '0.0.1'
+    STORE_DESCRIPTION: str = 'FastAPI Best Architecture'
+    STORE_DOCS_URL: str = '/docs'
+    STORE_REDOC_URL: str = '/redoc'
+    STORE_OPENAPI_URL: str | None = '/openapi'
+    STORE_STATIC_FILES: bool = True
 
     # Database
     DATABASE_ECHO: bool = False
@@ -68,7 +77,8 @@ class Settings(BaseSettings):
     TOKEN_ONLINE_REDIS_PREFIX: str = 'fba:token_online'
     TOKEN_REFRESH_REDIS_PREFIX: str = 'fba:refresh_token'
     TOKEN_REQUEST_PATH_EXCLUDE: list[str] = [  # JWT / RBAC 白名单
-        f'{FASTAPI_API_V1_PATH}/auth/login',
+        f'{ADMIN_API_PATH}/auth/login',
+        f'{STORE_API_PATH}/auth/login',
     ]
 
     # JWT
@@ -130,9 +140,9 @@ class Settings(BaseSettings):
     # Demo mode (Only GET, OPTIONS requests are allowed)
     DEMO_MODE: bool = False
     DEMO_MODE_EXCLUDE: set[tuple[str, str]] = {
-        ('POST', f'{FASTAPI_API_V1_PATH}/auth/login'),
-        ('POST', f'{FASTAPI_API_V1_PATH}/auth/logout'),
-        ('GET', f'{FASTAPI_API_V1_PATH}/auth/captcha'),
+        ('POST', f'{ADMIN_API_PATH}/auth/login'),
+        ('POST', f'{ADMIN_API_PATH}/auth/logout'),
+        ('GET', f'{ADMIN_API_PATH}/auth/captcha'),
     }
 
     # Ip location
@@ -143,12 +153,12 @@ class Settings(BaseSettings):
     # Opera log
     OPERA_LOG_PATH_EXCLUDE: list[str] = [
         '/favicon.ico',
-        FASTAPI_DOCS_URL,
-        FASTAPI_REDOC_URL,
-        FASTAPI_OPENAPI_URL,
-        f'{FASTAPI_API_V1_PATH}/auth/login/swagger',
-        f'{FASTAPI_API_V1_PATH}/oauth2/github/callback',
-        f'{FASTAPI_API_V1_PATH}/oauth2/linux-do/callback',
+        ADMIN_DOCS_URL,
+        ADMIN_REDOC_URL,
+        ADMIN_OPENAPI_URL,
+        f'{ADMIN_API_PATH}/auth/login/swagger',
+        f'{ADMIN_API_PATH}/oauth2/github/callback',
+        f'{ADMIN_API_PATH}/oauth2/linux-do/callback',
     ]
     OPERA_LOG_ENCRYPT_TYPE: int = 1  # 0: AES (性能损耗); 1: md5; 2: ItsDangerous; 3: 不加密, others: 替换为 ******
     OPERA_LOG_ENCRYPT_KEY_INCLUDE: list[str] = [  # 将加密接口入参参数对应的值
