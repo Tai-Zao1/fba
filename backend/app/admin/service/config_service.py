@@ -6,7 +6,7 @@ from sqlalchemy import Select
 
 from backend.app.admin.conf import admin_settings
 from backend.app.admin.crud.crud_config import config_dao
-from backend.app.admin.model import Config
+from backend.app.model.config import Config
 from backend.app.admin.schema.config import (
     CreateConfigParam,
     SaveBuiltInConfigParam,

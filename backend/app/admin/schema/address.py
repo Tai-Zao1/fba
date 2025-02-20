@@ -1,7 +1,3 @@
-from pydantic import ConfigDict
-from sqlalchemy.orm import session
-
-from backend.app.admin.model.address import Address
 from backend.common.schema import SchemaBase
 
 

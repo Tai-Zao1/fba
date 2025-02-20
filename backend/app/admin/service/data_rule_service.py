@@ -7,7 +7,7 @@ from sqlalchemy import Select
 
 from backend.app.admin.crud.crud_data_rule import data_rule_dao
 from backend.app.admin.crud.crud_role import role_dao
-from backend.app.admin.model import DataRule
+from backend.app.model.data_rule import DataRule
 from backend.app.admin.schema.data_rule import CreateDataRuleParam, UpdateDataRuleParam
 from backend.common.exception import errors
 from backend.core.conf import settings

@@ -7,7 +7,7 @@ from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.dialects.postgresql import TEXT
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.app.admin.model.m2m import sys_role_menu
+from backend.app.model.m2m import sys_role_menu
 from backend.common.model import Base, id_key
 
 

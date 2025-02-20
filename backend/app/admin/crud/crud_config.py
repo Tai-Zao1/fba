@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy_crud_plus import CRUDPlus
 
 from backend.app.admin.conf import admin_settings
-from backend.app.admin.model import Config
+from backend.app.model.config import Config
 from backend.app.admin.schema.config import CreateConfigParam, UpdateConfigParam
 
 

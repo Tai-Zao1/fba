@@ -6,7 +6,7 @@ from sqlalchemy import and_, asc, select
 from sqlalchemy.orm import selectinload
 from sqlalchemy_crud_plus import CRUDPlus
 
-from backend.app.admin.model import Menu
+from backend.app.model.menu import Menu
 from backend.app.admin.schema.menu import CreateMenuParam, UpdateMenuParam
 
 

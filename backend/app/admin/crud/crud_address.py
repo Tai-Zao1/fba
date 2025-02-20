@@ -1,8 +1,8 @@
-from sqlalchemy import Select, select, desc, asc
+from sqlalchemy import select, asc
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy_crud_plus import CRUDPlus
 
-from backend.app.admin.model.address import Address
+from backend.app.model.address import Address
 
 
 class CRUDAddress(CRUDPlus[Address]):

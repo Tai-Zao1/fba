@@ -8,7 +8,7 @@ from sqlalchemy import Select
 from backend.app.admin.crud.crud_data_rule import data_rule_dao
 from backend.app.admin.crud.crud_menu import menu_dao
 from backend.app.admin.crud.crud_role import role_dao
-from backend.app.admin.model import Role
+from backend.app.model.role import Role
 from backend.app.admin.schema.role import (
     CreateRoleParam,
     UpdateRoleMenuParam,

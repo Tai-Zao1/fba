@@ -7,7 +7,7 @@ from sqlalchemy import VARBINARY, Boolean, DateTime, ForeignKey, String
 from sqlalchemy.dialects.postgresql import BYTEA, INTEGER
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.app.admin.model.m2m import sys_user_role
+from backend.app.model.m2m import sys_user_role
 from backend.common.model import Base, id_key
 from backend.database.db import uuid4_str
 from backend.utils.timezone import timezone

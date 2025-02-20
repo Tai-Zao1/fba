@@ -8,7 +8,7 @@ from starlette.background import BackgroundTask, BackgroundTasks
 from backend.app.admin.conf import admin_settings
 from backend.app.admin.crud.crud_dict_type import dict_type_dao
 from backend.app.admin.crud.crud_user import user_dao
-from backend.app.admin.model import User
+from backend.app.model.user import User
 from backend.app.admin.schema.token import GetLoginToken, GetNewToken
 from backend.app.admin.schema.user import AuthLoginParam
 from backend.app.admin.service.login_log_service import login_log_service

@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import noload, selectinload
 from sqlalchemy_crud_plus import CRUDPlus
 
-from backend.app.admin.model import DictData
+from backend.app.model.dict_data import DictData
 from backend.app.admin.schema.dict_data import CreateDictDataParam, UpdateDictDataParam
 
 

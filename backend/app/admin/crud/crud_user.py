@@ -4,11 +4,13 @@ import bcrypt
 
 from sqlalchemy import and_, desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import noload, selectinload, load_only
+from sqlalchemy.orm import noload, selectinload
 from sqlalchemy.sql import Select
 from sqlalchemy_crud_plus import CRUDPlus
 
-from backend.app.admin.model import Dept, Role, User
+from backend.app.model import Dept
+from backend.app.model.role import Role
+from backend.app.model.user import User
 from backend.app.admin.schema.user import (
     AddUserParam,
     AvatarParam,
