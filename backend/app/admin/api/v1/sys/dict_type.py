@@ -22,6 +22,8 @@ router = APIRouter()
     dependencies=[
         DependsJwtAuth,
         DependsPagination,
+        Depends(RequestPermission('sys:dict:list')),
+        DependsRBAC
     ],
 )
 async def get_pagination_dict_types(
@@ -39,7 +41,7 @@ async def get_pagination_dict_types(
     '',
     summary='创建字典类型',
     dependencies=[
-        Depends(RequestPermission('sys:dict:type:add')),
+        Depends(RequestPermission('sys:dict:add')),
         DependsRBAC,
     ],
 )
@@ -52,7 +54,7 @@ async def create_dict_type(obj: CreateDictTypeParam) -> ResponseModel:
     '/{pk}',
     summary='更新字典类型',
     dependencies=[
-        Depends(RequestPermission('sys:dict:type:edit')),
+        Depends(RequestPermission('sys:dict:edit')),
         DependsRBAC,
     ],
 )
@@ -67,7 +69,7 @@ async def update_dict_type(pk: Annotated[int, Path(...)], obj: UpdateDictTypePar
     '',
     summary='（批量）删除字典类型',
     dependencies=[
-        Depends(RequestPermission('sys:dict:type:del')),
+        Depends(RequestPermission('sys:dict:del')),
         DependsRBAC,
     ],
 )

@@ -5,9 +5,9 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Path, Query
 from fastapi.responses import StreamingResponse
 
-from backend.app.generator.conf import generator_settings
-from backend.app.generator.schema.gen import ImportParam
-from backend.app.generator.service.gen_service import gen_service
+from backend.app.admin.generator.conf import generator_settings
+from backend.app.admin.generator.schema.gen import ImportParam
+from backend.app.admin.generator.service.gen_service import gen_service
 from backend.common.response.response_schema import ResponseModel, ResponseSchemaModel, response_base
 from backend.common.security.jwt import DependsJwtAuth
 from backend.common.security.permission import RequestPermission

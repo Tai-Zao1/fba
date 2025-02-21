@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from fastapi import APIRouter
 
-from backend.app.task.api.v1.task import router as task_router
+from backend.app.admin.task.api.v1.task import router as task_router
 from backend.core.conf import settings
 
 v1 = APIRouter(prefix=settings.ADMIN_API_PATH)

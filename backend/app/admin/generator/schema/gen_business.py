@@ -5,7 +5,7 @@ from datetime import datetime
 from pydantic import ConfigDict, Field, model_validator
 from typing_extensions import Self
 
-from backend.app.generator.schema.gen_model import GetGenModelDetail
+from backend.app.admin.generator.schema.gen_model import GetGenModelDetail
 from backend.common.schema import SchemaBase
 
 

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from urllib.request import Request
+
 import bcrypt
 
 from sqlalchemy import and_, desc, select
@@ -21,25 +23,27 @@ from backend.utils.timezone import timezone
 
 
 class CRUDUser(CRUDPlus[User]):
-    async def get(self, db: AsyncSession, user_id: int) -> User | None:
+    async def get(self, db: AsyncSession, user_id: int, store_id: int) -> User | None:
         """
         获取用户
 
         :param db:
         :param user_id:
+        :param store_id:
         :return:
         """
-        return await self.select_model(db, user_id)
+        return await self.select_model_by_column(db, id=user_id, store_id=store_id)
 
-    async def get_by_phone(self, db: AsyncSession, phone: str) -> User | None:
+    async def get_by_phone(self, db: AsyncSession, phone: str, user_type: str) -> User | None:
         """
-        通过 username 获取用户
+        通过 手机号 获取用户
 
         :param db:
         :param phone:
+        :param user_type:
         :return:
         """
-        return await self.select_model_by_column(db, phone=phone)
+        return await self.select_model_by_column(db, phone=phone, user_type=user_type)
 
     async def get_by_nickname(self, db: AsyncSession, nickname: str) -> User | None:
         """
@@ -83,18 +87,21 @@ class CRUDUser(CRUDPlus[User]):
         new_user = self.model(**dict_obj)
         db.add(new_user)
 
-    async def add(self, db: AsyncSession, obj: AddUserParam) -> None:
+    async def add(self, db: AsyncSession, user_type: str, store_id: int, obj: AddUserParam) -> None:
         """
         后台添加用户
 
         :param db:
         :param obj:
+        :param user_type:
+        :param store_id:
         :return:
         """
         salt = bcrypt.gensalt()
         obj.password = get_hash_password(obj.password, salt)
         dict_obj = obj.model_dump(exclude={'roles'})
-        dict_obj.update({'salt': salt})
+        dict_obj.update({'salt': salt, 'store_id': store_id, 'user_type': user_type, 'is_staff': 1})
+        dict_obj.update({})
         new_user = self.model(**dict_obj)
         role_list = []
         for role_id in obj.roles:
@@ -153,15 +160,16 @@ class CRUDUser(CRUDPlus[User]):
         """
         return await self.delete_model(db, user_id)
 
-    async def check_phone(self, db: AsyncSession, phone: str) -> User | None:
+    async def check_phone(self, db: AsyncSession, phone: str, user_type: str) -> User | None:
         """
         检查手机号是否存在
 
         :param db:
         :param phone:
+        :param user_type
         :return:
         """
-        return await self.select_model_by_column(db, phone=phone)
+        return await self.select_model_by_column(db, phone=phone, user_type=user_type)
 
     async def reset_password(self, db: AsyncSession, pk: int, new_pwd: str) -> int:
         """
@@ -174,18 +182,22 @@ class CRUDUser(CRUDPlus[User]):
         """
         return await self.update_model(db, pk, {'password': new_pwd})
 
-    async def get_list(self, dept: int = None, username: str = None, phone: str = None, status: int = None, user_id: int = None) -> Select:
+    async def get_list(self, store_id: int, dept: int = None, username: str = None, phone: str = None, status: int = None,
+                       user_id: int = None) -> Select:
         """
         获取用户列表
 
+        :param store_id:
         :param dept:
         :param username:
         :param phone:
         :param status:
+        :param user_id:
         :return:
         """
         stmt = (
             select(self.model)
+            .where(self.model.store_id==store_id)
             .options(
                 selectinload(self.model.dept).options(noload(Dept.parent), noload(Dept.children), noload(Dept.users)),
                 noload(self.model.socials),
@@ -221,37 +233,40 @@ class CRUDUser(CRUDPlus[User]):
         user = await self.get(db, user_id)
         return user.is_superuser
 
-    async def get_staff(self, db: AsyncSession, user_id: int) -> bool:
+    async def get_staff(self, db: AsyncSession, user_id: int, store_id: int) -> bool:
         """
         获取用户后台登录状态
 
         :param db:
+        :param store_id:
         :param user_id:
         :return:
         """
-        user = await self.get(db, user_id)
+        user = await self.get(db, user_id, store_id)
         return user.is_staff
 
-    async def get_status(self, db: AsyncSession, user_id: int) -> int:
+    async def get_status(self, db: AsyncSession, user_id: int, store_id: int) -> int:
         """
         获取用户状态
 
         :param db:
         :param user_id:
+        :param store_id:
         :return:
         """
-        user = await self.get(db, user_id)
+        user = await self.get(db, user_id, store_id)
         return user.status
 
-    async def get_multi_login(self, db: AsyncSession, user_id: int) -> bool:
+    async def get_multi_login(self, db: AsyncSession, user_id: int, store_id: int) -> bool:
         """
         获取用户多点登录状态
 
         :param db:
         :param user_id:
+        :param store_id:
         :return:
         """
-        user = await self.get(db, user_id)
+        user = await self.get(db, user_id, store_id)
         return user.is_multi_login
 
     async def set_super(self, db: AsyncSession, user_id: int, _super: bool) -> int:
@@ -298,27 +313,35 @@ class CRUDUser(CRUDPlus[User]):
         """
         return await self.update_model(db, user_id, {'is_multi_login': multi_login})
 
-    async def get_with_relation(self, db: AsyncSession, *, user_id: int = None, phone: str = None) -> User | None:
+    async def get_with_relation(self, db: AsyncSession, *, store_id: int = None, user_type: str = None, user_id: int = None,
+                                phone: str = None) -> User | None:
         """
         获取用户和（部门，角色，菜单，规则）
 
         :param db:
+        :param store_id:
+        :param user_type:
         :param user_id:
         :param phone:
         :return:
         """
-        stmt = select(self.model).options(
-            selectinload(self.model.dept),
-            selectinload(self.model.roles).options(
-                selectinload(Role.menus),
-                selectinload(Role.rules),
-            ),
-        )
+        stmt = (select(self.model)
+                .options(selectinload(self.model.dept),
+                         selectinload(self.model.roles)
+                         .options(
+                             selectinload(Role.menus),
+                             selectinload(Role.rules),
+                         ),
+                         ))
         filters = []
         if user_id:
             filters.append(self.model.id == user_id)
         if phone:
             filters.append(self.model.phone == phone)
+        if user_type:
+            filters.append(self.model.user_type == user_type)
+        if store_id:
+            filters.append(self.model.store_id == store_id)
         user = await db.execute(stmt.where(*filters))
         return user.scalars().first()
 

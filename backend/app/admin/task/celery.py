@@ -3,7 +3,7 @@
 import celery
 import celery_aio_pool
 
-from backend.app.task.conf import task_settings
+from backend.app.admin.task.conf import task_settings
 from backend.core.conf import settings
 
 __all__ = ['celery_app']

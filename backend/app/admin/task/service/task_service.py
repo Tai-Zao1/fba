@@ -4,8 +4,8 @@ from celery.exceptions import NotRegistered
 from celery.result import AsyncResult
 from starlette.concurrency import run_in_threadpool
 
-from backend.app.task.celery import celery_app
-from backend.app.task.schema.task import RunParam, TaskResult
+from backend.app.admin.task.celery import celery_app
+from backend.app.admin.task.schema.task import RunParam, TaskResult
 from backend.common.exception import errors
 from backend.common.exception.errors import NotFoundError
 

@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 from fastapi import APIRouter
 
-from backend.app.generator.api.v1.gen import router as gen_router
-from backend.app.generator.api.v1.gen_business import router as gen_business_router
-from backend.app.generator.api.v1.gen_model import router as gen_model_router
+from backend.app.admin.generator.api.v1.gen import router as gen_router
+from backend.app.admin.generator.api.v1.gen_business import router as gen_business_router
+from backend.app.admin.generator.api.v1.gen_model import router as gen_model_router
 from backend.core.conf import settings
 
 v1 = APIRouter(prefix=f'{settings.ADMIN_API_PATH}/gen', tags=['代码生成'])

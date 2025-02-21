@@ -16,7 +16,6 @@ class DeptSchemaBase(SchemaBase):
     phone: CustomPhoneNumber | None = None
     email: CustomEmailStr | None = None
     status: StatusType = Field(default=StatusType.enable.value)
-    store_id: int | None = None
 
 
 class CreateDeptParam(DeptSchemaBase):

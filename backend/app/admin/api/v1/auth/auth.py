@@ -18,7 +18,8 @@ router = APIRouter()
 
 @router.post('/login/swagger', summary='swagger 调试专用', description='用于快捷获取 token 进行 swagger 认证')
 async def swagger_login(obj: Annotated[HTTPBasicCredentials, Depends()]) -> GetSwaggerToken:
-    token, user = await auth_service.swagger_login(obj=obj)
+    user_type = '00'
+    token, user = await auth_service.swagger_login(obj=obj, user_type=user_type)
     return GetSwaggerToken(access_token=token, user=user)  # type: ignore
 
 
@@ -31,7 +32,8 @@ async def swagger_login(obj: Annotated[HTTPBasicCredentials, Depends()]) -> GetS
 async def user_login(
     request: Request, response: Response, obj: AuthLoginParam, background_tasks: BackgroundTasks
 ) -> ResponseSchemaModel[GetLoginToken]:
-    data = await auth_service.login(request=request, response=response, obj=obj, background_tasks=background_tasks)
+    user_type = '00'
+    data = await auth_service.login(request=request, response=response, obj=obj, user_type=user_type, background_tasks=background_tasks)
     return response_base.success(data=data)
 
 

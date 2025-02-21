@@ -17,7 +17,9 @@ from backend.utils.serializers import select_as_dict
 router = APIRouter()
 
 
-@router.get('/{pk}', summary='获取字典详情', dependencies=[DependsJwtAuth])
+@router.get('/{pk}',
+            summary='获取字典详情',
+            dependencies=[DependsJwtAuth])
 async def get_dict_data(pk: Annotated[int, Path(...)]) -> ResponseSchemaModel[GetDictDataDetail]:
     dict_data = await dict_data_service.get(pk=pk)
     data = GetDictDataDetail(**select_as_dict(dict_data))
@@ -29,7 +31,7 @@ async def get_dict_data(pk: Annotated[int, Path(...)]) -> ResponseSchemaModel[Ge
     summary='（模糊条件）分页获取所有字典',
     dependencies=[
         DependsJwtAuth,
-        DependsPagination,
+        DependsPagination
     ],
 )
 async def get_pagination_dict_datas(
@@ -43,14 +45,7 @@ async def get_pagination_dict_datas(
     return response_base.success(data=page_data)
 
 
-@router.post(
-    '',
-    summary='创建字典',
-    dependencies=[
-        Depends(RequestPermission('sys:dict:data:add')),
-        DependsRBAC,
-    ],
-)
+@router.post('', summary='创建字典', dependencies=[DependsJwtAuth])
 async def create_dict_data(obj: CreateDictDataParam) -> ResponseModel:
     await dict_data_service.create(obj=obj)
     return response_base.success()
@@ -60,7 +55,7 @@ async def create_dict_data(obj: CreateDictDataParam) -> ResponseModel:
     '/{pk}',
     summary='更新字典',
     dependencies=[
-        Depends(RequestPermission('sys:dict:data:edit')),
+        Depends(RequestPermission('sys:dict:edit')),
         DependsRBAC,
     ],
 )
@@ -75,8 +70,6 @@ async def update_dict_data(pk: Annotated[int, Path(...)], obj: UpdateDictDataPar
     '',
     summary='（批量）删除字典',
     dependencies=[
-        Depends(RequestPermission('sys:dict:data:del')),
-        DependsRBAC,
     ],
 )
 async def delete_dict_data(pk: Annotated[list[int], Query(...)]) -> ResponseModel:

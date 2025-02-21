@@ -11,14 +11,14 @@ import aiofiles
 
 from pydantic.alias_generators import to_pascal
 
-from backend.app.generator.crud.crud_gen import gen_dao
-from backend.app.generator.crud.crud_gen_business import gen_business_dao
-from backend.app.generator.crud.crud_gen_model import gen_model_dao
-from backend.app.generator.model import GenBusiness
-from backend.app.generator.schema.gen import ImportParam
-from backend.app.generator.schema.gen_business import CreateGenBusinessParam
-from backend.app.generator.schema.gen_model import CreateGenModelParam
-from backend.app.generator.service.gen_model_service import gen_model_service
+from backend.app.admin.generator.crud.crud_gen import gen_dao
+from backend.app.admin.generator.crud.crud_gen_business import gen_business_dao
+from backend.app.admin.generator.crud.crud_gen_model import gen_model_dao
+from backend.app.admin.generator.model import GenBusiness
+from backend.app.admin.generator.schema.gen import ImportParam
+from backend.app.admin.generator.schema.gen_business import CreateGenBusinessParam
+from backend.app.admin.generator.schema.gen_model import CreateGenModelParam
+from backend.app.admin.generator.service.gen_model_service import gen_model_service
 from backend.common.exception import errors
 from backend.core.path_conf import BasePath
 from backend.database.db import async_db_session

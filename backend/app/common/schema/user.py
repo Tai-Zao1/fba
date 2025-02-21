@@ -41,12 +41,15 @@ class UserInfoSchemaBase(SchemaBase):
     nickname: str
     email: Optional[EmailStr] = Field(None, examples=['user@example.com'])
     phone: str
-    user_type: str
+    user_type: str | None = None
     store_id: int | None = None
 
 
-class UpdateUserParam(UserInfoSchemaBase):
-    pass
+class UpdateUserParam(SchemaBase):
+    dept_id: int | None = None
+    nickname: str
+    email: Optional[EmailStr] = Field(None, examples=['user@example.com'])
+    phone: str
 
 
 class UpdateUserRoleParam(SchemaBase):

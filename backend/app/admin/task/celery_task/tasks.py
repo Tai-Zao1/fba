@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from anyio import sleep
 
-from backend.app.task.celery import celery_app
+from backend.app.admin.task.celery import celery_app
 
 
 @celery_app.task(name='task_demo_async')

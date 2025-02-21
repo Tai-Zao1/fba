@@ -43,7 +43,7 @@ class User(Base):
     last_login_time: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), init=False, onupdate=timezone.now, comment='上次登录'
     )
-    user_type: Mapped[str | None] = mapped_column(String(11), default='00', comment="用户类型，00:系统，10:C端，20:B端")
+    user_type: Mapped[str] = mapped_column(String(11), default='00', comment="用户类型，00:系统，10:C端，20:B端")
     # 商户ID
     store_id: Mapped[int | None] = mapped_column(default=None, comment='商户ID')
     store_superuser: Mapped[bool] = mapped_column(Boolean, default=False, comment='商户超级权限(0否 1是)')

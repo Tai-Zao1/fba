@@ -13,7 +13,6 @@ from backend.common.schema import SchemaBase
 class RoleSchemaBase(SchemaBase):
     name: str
     status: StatusType = Field(default=StatusType.enable.value)
-    store_id: int | None = None
     remark: str | None = None
 
 

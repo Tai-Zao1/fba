@@ -60,15 +60,16 @@ class CRUDDept(CRUDPlus[Dept]):
             filters.update(status=status)
         return await self.select_models_order(db, sort_columns='sort', **filters)
 
-    async def create(self, db: AsyncSession, obj_in: CreateDeptParam) -> None:
+    async def create(self, db: AsyncSession, obj_in: CreateDeptParam, store_id: int) -> None:
         """
         创建部门
 
         :param db:
         :param obj_in:
+        :param store_id:
         :return:
         """
-        db_obj = await self.create_model(db, obj_in)
+        db_obj = await self.create_model(db, obj_in, store_id=store_id)
         await db.flush()  # 确保获得 id
         return db_obj
 
@@ -93,28 +94,30 @@ class CRUDDept(CRUDPlus[Dept]):
         """
         return await self.delete_model_by_column(db, id=dept_id, logical_deletion=True, deleted_flag_column='del_flag')
 
-    async def get_with_relation(self, db: AsyncSession, dept_id: int) -> list[User]:
+    async def get_with_relation(self, db: AsyncSession, dept_id: int, store_id: int) -> list[User]:
         """
         获取关联
 
         :param db:
         :param dept_id:
+        :param store_id
         :return:
         """
-        stmt = select(self.model).options(selectinload(self.model.users)).where(self.model.id == dept_id)
+        stmt = select(self.model).options(selectinload(self.model.users)).where(self.model.id == dept_id, self.model.store_id == store_id)
         result = await db.execute(stmt)
         user_relation = result.scalars().first()
         return user_relation.users
 
-    async def get_children(self, db: AsyncSession, dept_id: int) -> list[Dept]:
+    async def get_children(self, db: AsyncSession, dept_id: int, store_id: int) -> list[Dept]:
         """
         获取子部门
 
         :param db:
         :param dept_id:
+        :param store_id:
         :return:
         """
-        stmt = select(self.model).options(selectinload(self.model.children)).where(self.model.id == dept_id)
+        stmt = select(self.model).options(selectinload(self.model.children)).where(self.model.id == dept_id, self.model.store_id==store_id)
         result = await db.execute(stmt)
         dept = result.scalars().first()
         return dept.children

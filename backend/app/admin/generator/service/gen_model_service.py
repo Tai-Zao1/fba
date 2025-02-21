@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 from typing import Sequence
 
-from backend.app.generator.crud.crud_gen_model import gen_model_dao
-from backend.app.generator.model import GenModel
-from backend.app.generator.schema.gen_model import CreateGenModelParam, UpdateGenModelParam
+from backend.app.admin.generator.crud.crud_gen_model import gen_model_dao
+from backend.app.admin.generator.model import GenModel
+from backend.app.admin.generator.schema.gen_model import CreateGenModelParam, UpdateGenModelParam
 from backend.common.enums import GenModelMySQLColumnType
 from backend.common.exception import errors
 from backend.database.db import async_db_session

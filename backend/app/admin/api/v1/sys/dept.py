@@ -15,17 +15,19 @@ from backend.utils.serializers import select_as_dict
 router = APIRouter()
 
 
-@router.get('/{pk}', summary='获取部门详情', dependencies=[DependsJwtAuth])
+@router.get('/{pk}',
+            summary='获取部门详情',
+            dependencies=[DependsJwtAuth,Depends(RequestPermission('sys:dept:query')), DependsRBAC])
 async def get_dept(pk: Annotated[int, Path(...)],
                    request: Request
                    ) -> ResponseSchemaModel[GetDeptDetail]:
-    store_id = request.user.store_id
-    dept = await dept_service.get(pk=pk, store_id=store_id)
+    dept = await dept_service.get(request=request, pk=pk)
     data = GetDeptDetail(**select_as_dict(dept))
     return response_base.success(data=data)
 
 
-@router.get('', summary='获取所有部门展示树', dependencies=[DependsJwtAuth])
+@router.get('', summary='获取所有部门展示树',
+            dependencies=[DependsJwtAuth, Depends(RequestPermission('sys:dept:list')), DependsRBAC])
 async def get_all_depts_tree(
         request: Request,
         name: Annotated[str | None, Query()] = None,
@@ -34,8 +36,7 @@ async def get_all_depts_tree(
         status: Annotated[int | None, Query()] = None,
 
 ) -> ResponseSchemaModel[list[dict[str, Any]]]:
-    store_id = request.user.store_id
-    dept = await dept_service.get_dept_tree(name=name, leader=leader, phone=phone, status=status, store_id=store_id)
+    dept = await dept_service.get_dept_tree(request=request, name=name, leader=leader, phone=phone, status=status)
     return response_base.success(data=dept)
 
 
@@ -48,9 +49,7 @@ async def get_all_depts_tree(
     ],
 )
 async def create_dept(request: Request, obj: CreateDeptParam) -> ResponseModel:
-    store_id = request.user.store_id
-    obj.store_id = store_id
-    await dept_service.create(obj=obj)
+    await dept_service.create(request=request, obj=obj)
     return response_base.success()
 
 
@@ -62,8 +61,8 @@ async def create_dept(request: Request, obj: CreateDeptParam) -> ResponseModel:
         DependsRBAC,
     ],
 )
-async def update_dept(pk: Annotated[int, Path(...)], obj: UpdateDeptParam) -> ResponseModel:
-    count = await dept_service.update(pk=pk, obj=obj)
+async def update_dept(request: Request, pk: Annotated[int, Path(...)], obj: UpdateDeptParam) -> ResponseModel:
+    count = await dept_service.update(request=request, pk=pk, obj=obj)
     if count > 0:
         return response_base.success()
     return response_base.fail()

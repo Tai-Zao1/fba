@@ -15,24 +15,40 @@ from backend.utils.serializers import select_as_dict
 router = APIRouter()
 
 
-@router.get('/sidebar', summary='获取用户菜单展示树', dependencies=[DependsJwtAuth])
+@router.get('/sidebar',
+            summary='获取用户菜单展示树',
+            dependencies=[
+                DependsJwtAuth
+            ])
 async def get_user_sidebar_tree(request: Request) -> ResponseSchemaModel[list[dict[str, Any]]]:
     menu = await menu_service.get_user_menu_tree(request=request)
     return response_base.success(data=menu)
 
 
-@router.get('/{pk}', summary='获取菜单详情', dependencies=[DependsJwtAuth])
-async def get_menu(pk: Annotated[int, Path(...)]) -> ResponseSchemaModel[GetMenuDetail]:
-    menu = await menu_service.get(pk=pk)
+@router.get('/{pk}',
+            summary='获取菜单详情',
+            dependencies=[
+                DependsJwtAuth,
+                Depends(RequestPermission('sys:menu:query')),
+                DependsRBAC
+            ])
+async def get_menu(request: Request, pk: Annotated[int, Path(...)]) -> ResponseSchemaModel[GetMenuDetail]:
+    menu = await menu_service.get(request=request, pk=pk)
     data = GetMenuDetail(**select_as_dict(menu))
     return response_base.success(data=data)
 
 
-@router.get('', summary='获取所有菜单展示树', dependencies=[DependsJwtAuth])
-async def get_all_menus(
-    title: Annotated[str | None, Query()] = None, status: Annotated[int | None, Query()] = None
-) -> ResponseSchemaModel[list[dict[str, Any]]]:
-    menu = await menu_service.get_menu_tree(title=title, status=status)
+@router.get('',
+            summary='获取所有菜单展示树',
+            dependencies=[
+                DependsJwtAuth,
+                Depends(RequestPermission('sys:menu:list')),
+                DependsRBAC
+            ])
+async def get_all_menus(request: Request,
+                        title: Annotated[str | None, Query()] = None, status: Annotated[int | None, Query()] = None
+                        ) -> ResponseSchemaModel[list[dict[str, Any]]]:
+    menu = await menu_service.get_menu_tree(request=request, title=title, status=status)
     return response_base.success(data=menu)
 
 
@@ -44,8 +60,8 @@ async def get_all_menus(
         DependsRBAC,
     ],
 )
-async def create_menu(obj: CreateMenuParam) -> ResponseModel:
-    await menu_service.create(obj=obj)
+async def create_menu(request: Request, obj: CreateMenuParam) -> ResponseModel:
+    await menu_service.create(request=request, obj=obj)
     return response_base.success()
 
 
@@ -57,8 +73,8 @@ async def create_menu(obj: CreateMenuParam) -> ResponseModel:
         DependsRBAC,
     ],
 )
-async def update_menu(pk: Annotated[int, Path(...)], obj: UpdateMenuParam) -> ResponseModel:
-    count = await menu_service.update(pk=pk, obj=obj)
+async def update_menu(request: Request, pk: Annotated[int, Path(...)], obj: UpdateMenuParam) -> ResponseModel:
+    count = await menu_service.update(request=request, pk=pk, obj=obj)
     if count > 0:
         return response_base.success()
     return response_base.fail()

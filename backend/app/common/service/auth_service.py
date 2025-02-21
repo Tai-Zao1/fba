@@ -32,8 +32,8 @@ from backend.utils.timezone import timezone
 
 class AuthService:
     @staticmethod
-    async def user_verify(db: AsyncSession, phone: str, password: str) -> User:
-        user = await user_dao.get_by_phone(db, phone)
+    async def user_verify(db: AsyncSession, phone: str, password: str, user_type: str) -> User:
+        user = await user_dao.get_by_phone(db, phone, user_type)
         if not user:
             raise errors.NotFoundError(msg='用户名或密码有误')
         elif not password_verify(password, user.password):
@@ -42,9 +42,9 @@ class AuthService:
             raise errors.AuthorizationError(msg='用户已被锁定, 请联系统管理员')
         return user
 
-    async def swagger_login(self, *, obj: HTTPBasicCredentials) -> tuple[str, User]:
+    async def swagger_login(self, *, user_type: str, obj: HTTPBasicCredentials) -> tuple[str, User]:
         async with async_db_session.begin() as db:
-            user = await self.user_verify(db, obj.username, obj.password)
+            user = await self.user_verify(db, obj.username, obj.password, user_type=user_type)
             await user_dao.update_login_time(db, obj.username)
             a_token = await create_access_token(
                 str(user.id),
@@ -57,14 +57,12 @@ class AuthService:
             return a_token.access_token, user
 
     async def login(
-        self, *, request: Request, response: Response, obj: AuthLoginParam, background_tasks: BackgroundTasks
+        self, *, request: Request, response: Response, user_type: str, obj: AuthLoginParam, background_tasks: BackgroundTasks
     ) -> GetLoginToken:
         async with async_db_session.begin() as db:
             user = None
             try:
-                user = await self.user_verify(db, obj.phone, obj.password)
-                if user.user_type != '00':
-                    raise errors.AuthorizationError(msg='您没有权限登录')
+                user = await self.user_verify(db, obj.phone, obj.password, user_type=user_type)
                 # 获取字典，判断是否需要传验证码
                 captcha_dict = await dict_type_dao.get_by_code(db, code='captcha_code')
                 if captcha_dict.status == 1:

@@ -4,8 +4,8 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Path
 
-from backend.app.task.schema.task import RunParam, TaskResult
-from backend.app.task.service.task_service import task_service
+from backend.app.admin.task.schema.task import RunParam, TaskResult
+from backend.app.admin.task.service.task_service import task_service
 from backend.common.response.response_schema import ResponseModel, ResponseSchemaModel, response_base
 from backend.common.security.jwt import DependsJwtAuth
 from backend.common.security.permission import RequestPermission

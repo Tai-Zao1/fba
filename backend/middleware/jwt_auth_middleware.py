@@ -58,7 +58,7 @@ class JwtAuthMiddleware(AuthenticationBackend):
             if request_platform_type != token_user_type:
                 raise _AuthenticationError(code=403, msg='当前用户无权访问')
 
-            user = await jwt_authentication(token)
+            user = await jwt_authentication(token, user_type=payload['user_type'])
         except TokenError as exc:
             raise _AuthenticationError(code=exc.code, msg=exc.detail, headers=exc.headers)
         except Exception as e:

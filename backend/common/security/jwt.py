@@ -174,17 +174,18 @@ def jwt_decode(token: str) -> TokenPayload:
     return TokenPayload(id=int(user_id), session_uuid=session_uuid, expire_time=expire_time)
 
 
-async def get_current_user(db: AsyncSession, pk: int) -> User:
+async def get_current_user(db: AsyncSession, pk: int, user_type: str) -> User:
     """
     Get the current user through token
 
     :param db:
     :param pk:
+    :param user_type:
     :return:
     """
     from backend.app.common.crud.crud_user import user_dao
 
-    user = await user_dao.get_with_relation(db, user_id=pk)
+    user = await user_dao.get_with_relation(db, user_id=pk, user_type=user_type)
     if not user:
         raise TokenError(msg='Token 无效')
     if not user.status:
@@ -214,11 +215,12 @@ def superuser_verify(request: Request) -> bool:
     return superuser
 
 
-async def jwt_authentication(token: str) -> CurrentUserIns:
+async def jwt_authentication(token: str, user_type: str) -> CurrentUserIns:
     """
     JWT authentication
 
     :param token:
+    :param user_type:
     :return:
     """
     token_payload = jwt_decode(token)
@@ -229,7 +231,7 @@ async def jwt_authentication(token: str) -> CurrentUserIns:
     cache_user = await redis_client.get(f'{settings.JWT_USER_REDIS_PREFIX}:{user_id}')
     if not cache_user:
         async with async_db_session() as db:
-            current_user = await get_current_user(db, user_id)
+            current_user = await get_current_user(db, user_id, user_type)
             user = CurrentUserIns(**select_as_dict(current_user))
             await redis_client.setex(
                 f'{settings.JWT_USER_REDIS_PREFIX}:{user_id}',

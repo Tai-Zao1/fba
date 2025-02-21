@@ -26,9 +26,9 @@ class DataRuleService:
             return data_rule
 
     @staticmethod
-    async def get_role_rules(*, pk: int) -> list[int]:
+    async def get_role_rules(*, request: Request, pk: int) -> list[int]:
         async with async_db_session() as db:
-            role = await role_dao.get_with_relation(db, pk)
+            role = await role_dao.get_with_relation(db, pk, request.user.store_id)
             if not role:
                 raise errors.NotFoundError(msg='角色不存在')
             rule_ids = [rule.id for rule in role.rules]

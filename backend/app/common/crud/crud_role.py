@@ -16,28 +16,30 @@ from backend.app.common.schema.role import (
 
 
 class CRUDRole(CRUDPlus[Role]):
-    async def get(self, db, role_id: int) -> Role | None:
+    async def get(self, db, role_id: int, store_id: int) -> Role | None:
         """
         获取角色
 
         :param db:
         :param role_id:
+        :param store_id:
         :return:
         """
-        return await self.select_model(db, role_id)
+        return await self.select_model_by_column(db, id=role_id, store_id=store_id)
 
-    async def get_with_relation(self, db, role_id: int) -> Role | None:
+    async def get_with_relation(self, db, role_id: int, store_id: int) -> Role | None:
         """
         获取角色和菜单
 
         :param db:
         :param role_id:
+        :param store_id
         :return:
         """
         stmt = (
             select(self.model)
             .options(selectinload(self.model.menus), selectinload(self.model.rules))
-            .where(self.model.id == role_id)
+            .where(self.model.id == role_id, self.model.store_id == store_id)
         )
         role = await db.execute(stmt)
         return role.scalars().first()
@@ -58,23 +60,26 @@ class CRUDRole(CRUDPlus[Role]):
 
         :param db:
         :param user_id:
+        :param store_id:
         :return:
         """
         stmt = select(self.model).join(self.model.users).where(User.id == user_id)
         roles = await db.execute(stmt)
         return roles.scalars().all()
 
-    async def get_list(self, name: str = None, status: int = None) -> Select:
+    async def get_list(self, store_id: int, name: str = None, status: int = None) -> Select:
         """
         获取角色列表
 
         :param name:
         :param status:
+        :param store_id:
         :return:
         """
         stmt = (
             select(self.model)
             .options(noload(self.model.users), noload(self.model.menus), noload(self.model.rules))
+            .where(self.model.store_id == store_id)
             .order_by(desc(self.model.created_time))
         )
         where_list = []
@@ -97,55 +102,60 @@ class CRUDRole(CRUDPlus[Role]):
         """
         return await self.select_model_by_column(db, name=name, store_id=store_id)
 
-    async def create(self, db, obj_in: CreateRoleParam) -> None:
+    async def create(self, db, store_id, obj_in: CreateRoleParam) -> None:
         """
         创建角色
 
         :param db:
         :param obj_in:
+        :param store_id:
         :return:
         """
-        db_obj= await self.create_model(db, obj_in)
+
+        db_obj = await self.create_model(db, obj_in, store_id=store_id)
         await db.flush()
         return db_obj
 
-    async def update(self, db, role_id: int, obj_in: UpdateRoleParam) -> int:
+    async def update(self, db, role_id: int, store_id: str, obj_in: UpdateRoleParam) -> int:
         """
         更新角色
 
         :param db:
         :param role_id:
+        :param store_id:
         :param obj_in:
         :return:
         """
-        return await self.update_model(db, role_id, obj_in)
+        return await self.update_model(db, role_id, obj_in, store_id=store_id)
 
-    async def update_menus(self, db, role_id: int, menu_ids: UpdateRoleMenuParam) -> int:
+    async def update_menus(self, db, role_id: int, store_id: int, menu_ids: UpdateRoleMenuParam) -> int:
         """
         更新角色菜单
 
         :param db:
         :param role_id:
+        :param store_id
         :param menu_ids:
         :return:
         """
-        current_role = await self.get_with_relation(db, role_id)
+        current_role = await self.get_with_relation(db, role_id, store_id)
         # 更新菜单
         stmt = select(Menu).where(Menu.id.in_(menu_ids.menus))
         menus = await db.execute(stmt)
         current_role.menus = menus.scalars().all()
         return len(current_role.menus)
 
-    async def update_rules(self, db, role_id: int, rule_ids: UpdateRoleRuleParam) -> int:
+    async def update_rules(self, db, role_id: int, store_id: int, rule_ids: UpdateRoleRuleParam) -> int:
         """
         更新角色数据权限
 
         :param db:
         :param role_id:
+        :param store_id:
         :param rule_ids:
         :return:
         """
-        current_role = await self.get_with_relation(db, role_id)
+        current_role = await self.get_with_relation(db, role_id, store_id)
         # 更新数据权限
         stmt = select(DataRule).where(DataRule.id.in_(rule_ids.rules))
         rules = await db.execute(stmt)

@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 from typing import Sequence
 
-from backend.app.generator.crud.crud_gen_business import gen_business_dao
-from backend.app.generator.model import GenBusiness
-from backend.app.generator.schema.gen_business import CreateGenBusinessParam, UpdateGenBusinessParam
+from backend.app.admin.generator.crud.crud_gen_business import gen_business_dao
+from backend.app.admin.generator.model import GenBusiness
+from backend.app.admin.generator.schema.gen_business import CreateGenBusinessParam, UpdateGenBusinessParam
 from backend.common.exception import errors
 from backend.database.db import async_db_session
 

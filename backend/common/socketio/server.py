@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import socketio
 
-from backend.app.task.conf import task_settings
+from backend.app.admin.task.conf import task_settings
 from backend.common.log import log
 from backend.common.security.jwt import jwt_authentication
 from backend.core.conf import settings
