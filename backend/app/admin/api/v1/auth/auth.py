@@ -30,10 +30,11 @@ async def swagger_login(obj: Annotated[HTTPBasicCredentials, Depends()]) -> GetS
     dependencies=[Depends(RateLimiter(times=5, minutes=1))],
 )
 async def user_login(
-    request: Request, response: Response, obj: AuthLoginParam, background_tasks: BackgroundTasks
+        request: Request, response: Response, obj: AuthLoginParam, background_tasks: BackgroundTasks
 ) -> ResponseSchemaModel[GetLoginToken]:
     user_type = '00'
-    data = await auth_service.login(request=request, response=response, obj=obj, user_type=user_type, background_tasks=background_tasks)
+    data = await auth_service.login(request=request, response=response, obj=obj, user_type=user_type,
+                                    background_tasks=background_tasks)
     return response_base.success(data=data)
 
 

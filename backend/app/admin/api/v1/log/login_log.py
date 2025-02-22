@@ -26,10 +26,10 @@ router = APIRouter()
 
 )
 async def get_pagination_login_logs(
-    db: CurrentSession,
-    username: Annotated[str | None, Query()] = None,
-    status: Annotated[int | None, Query()] = None,
-    ip: Annotated[str | None, Query()] = None,
+        db: CurrentSession,
+        username: Annotated[str | None, Query()] = None,
+        status: Annotated[int | None, Query()] = None,
+        ip: Annotated[str | None, Query()] = None,
 ) -> ResponseSchemaModel[PageData[GetLoginLogDetail]]:
     log_select = await login_log_service.get_select(username=username, status=status, ip=ip)
     page_data = await paging_data(db, log_select)

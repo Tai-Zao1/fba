@@ -8,6 +8,7 @@ from backend.app.common.crud.crud_dept import dept_dao
 from backend.app.common.model import Dept
 from backend.app.common.schema.dept import CreateDeptParam, UpdateDeptParam
 from backend.common.exception import errors
+from backend.common.security.jwt import superuser_verify
 from backend.core.conf import settings
 from backend.database.db import async_db_session
 from backend.database.redis import redis_client
@@ -25,10 +26,11 @@ class DeptService:
 
     @staticmethod
     async def get_dept_tree(
-        *, request: Request, name: str | None = None, leader: str | None = None,
+            *, request: Request, name: str | None = None, leader: str | None = None,
             phone: str | None = None, status: int | None = None,
     ) -> list[dict[str, Any]]:
         async with async_db_session() as db:
+            superuser_verify(request)
             dept_select = await dept_dao.get_all(db=db, name=name, leader=leader,
                                                  phone=phone, status=status, store_id=request.user.store_id)
             tree_data = get_tree_data(dept_select)
@@ -37,6 +39,7 @@ class DeptService:
     @staticmethod
     async def create(*, request: Request, obj: CreateDeptParam) -> None:
         async with async_db_session.begin() as db:
+            superuser_verify(request)
             dept = await dept_dao.get_by_name(db, obj.name, request.user.store_id)
             if dept:
                 raise errors.ForbiddenError(msg='部门名称已存在')
@@ -49,6 +52,7 @@ class DeptService:
     @staticmethod
     async def update(*, request: Request, pk: int, obj: UpdateDeptParam) -> int:
         async with async_db_session.begin() as db:
+            superuser_verify(request)
             dept = await dept_dao.get(db, pk, store_id=request.user.store_id)
             if not dept:
                 raise errors.NotFoundError(msg='部门不存在')
@@ -67,8 +71,8 @@ class DeptService:
     @staticmethod
     async def delete(*, request: Request, pk: int) -> int:
         async with async_db_session.begin() as db:
+            superuser_verify(request)
             store_id = request.user.store_id
-            user_type = request.user.user_type
             dept = await dept_dao.get(db, pk, store_id=store_id)
             if not dept:
                 raise errors.NotFoundError(msg='部门不存在')

@@ -29,10 +29,10 @@ async def github_auth2() -> ResponseSchemaModel[str]:
     dependencies=[Depends(RateLimiter(times=5, minutes=1))],
 )
 async def github_login(
-    request: Request,
-    response: Response,
-    background_tasks: BackgroundTasks,
-    oauth2: FastAPIOAuth20 = Depends(_github_oauth2),
+        request: Request,
+        response: Response,
+        background_tasks: BackgroundTasks,
+        oauth2: FastAPIOAuth20 = Depends(_github_oauth2),
 ):
     token, _state = oauth2
     access_token = token['access_token']

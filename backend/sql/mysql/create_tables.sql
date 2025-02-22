@@ -287,7 +287,7 @@ create table sys_role
 create index ix_sys_role_id
     on sys_role (id);
 create index idx_name
-    on sys_role(name);
+    on sys_role (name);
 
 create table sys_role_data_rule
 (

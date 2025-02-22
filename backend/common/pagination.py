@@ -53,10 +53,10 @@ class _CustomPage(_PageDetails, AbstractPage[T], Generic[T]):
 
     @classmethod
     def create(
-        cls,
-        items: list,
-        total: int,
-        params: _CustomPageParams,
+            cls,
+            items: list,
+            total: int,
+            params: _CustomPageParams,
     ) -> _CustomPage[T]:
         page = params.page
         size = params.size

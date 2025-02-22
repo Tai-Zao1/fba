@@ -55,14 +55,14 @@ async def get_current_user(request: Request) -> ResponseSchemaModel[GetCurrentUs
     return response_base.success(data=data)
 
 
-@router.get('/{phone}', summary='查看用户信息', dependencies=[DependsRBAC, Depends(RequestPermission('sys:user:query'))])
+@router.get('/{phone}', summary='查看用户信息', dependencies=[DependsJwtAuth])
 async def get_user(request: Request, phone: Annotated[str, Path(...)]) -> ResponseSchemaModel[GetUserInfoDetail]:
     current_user = await user_service.get_userinfo(request=request, phone=phone)
     data = GetUserInfoDetail(**select_as_dict(current_user))
     return response_base.success(data=data)
 
 
-@router.put('/{phone}', summary='更新用户信息', dependencies=[DependsRBAC, Depends(RequestPermission('sys:user:edit'))])
+@router.put('/{phone}', summary='更新用户信息', dependencies=[DependsJwtAuth])
 async def update_user(request: Request, phone: Annotated[str, Path(...)], obj: UpdateUserParam) -> ResponseModel:
     count = await user_service.update(request=request, phone=phone, obj=obj)
     if count > 0:
@@ -79,7 +79,7 @@ async def update_user(request: Request, phone: Annotated[str, Path(...)], obj: U
     ],
 )
 async def update_user_role(
-    request: Request, phone: Annotated[str, Path(...)], obj: UpdateUserRoleParam
+        request: Request, phone: Annotated[str, Path(...)], obj: UpdateUserRoleParam
 ) -> ResponseModel:
     await user_service.update_roles(request=request, phone=phone, obj=obj)
     return response_base.success()
@@ -104,13 +104,13 @@ async def update_avatar(request: Request, phone: Annotated[str, Path(...)], avat
     ],
 )
 async def get_pagination_users(
-    db: CurrentSession,
-    request: Request,
-    dept: Annotated[int | None, Query()] = None,
-    username: Annotated[str | None, Query()] = None,
-    phone: Annotated[str | None, Query()] = None,
-    status: Annotated[int | None, Query()] = None,
-    user_id: Annotated[int | None, Query()] = None,
+        db: CurrentSession,
+        request: Request,
+        dept: Annotated[int | None, Query()] = None,
+        username: Annotated[str | None, Query()] = None,
+        phone: Annotated[str | None, Query()] = None,
+        status: Annotated[int | None, Query()] = None,
+        user_id: Annotated[int | None, Query()] = None,
 ) -> ResponseSchemaModel[PageData[GetUserInfoDetail]]:
     user_select = await user_service.get_select(request=request,
                                                 dept=dept,
@@ -122,7 +122,8 @@ async def get_pagination_users(
     return response_base.success(data=page_data)
 
 
-@router.put('/{pk}/super', summary='修改用户超级权限', dependencies=[DependsRBAC, Depends(RequestPermission('sys:user:edit'))])
+@router.put('/{pk}/super', summary='修改用户超级权限',
+            dependencies=[DependsRBAC, Depends(RequestPermission('sys:user:edit'))])
 async def super_set(request: Request, pk: Annotated[int, Path(...)]) -> ResponseModel:
     count = await user_service.update_permission(request=request, pk=pk)
     if count > 0:
@@ -130,7 +131,8 @@ async def super_set(request: Request, pk: Annotated[int, Path(...)]) -> Response
     return response_base.fail()
 
 
-@router.put('/{pk}/staff', summary='修改用户后台登录权限', dependencies=[DependsRBAC, Depends(RequestPermission('sys:user:edit'))])
+@router.put('/{pk}/staff', summary='修改用户后台登录权限',
+            dependencies=[DependsRBAC, Depends(RequestPermission('sys:user:edit'))])
 async def staff_set(request: Request, pk: Annotated[int, Path(...)]) -> ResponseModel:
     count = await user_service.update_staff(request=request, pk=pk)
     if count > 0:
@@ -138,7 +140,8 @@ async def staff_set(request: Request, pk: Annotated[int, Path(...)]) -> Response
     return response_base.fail()
 
 
-@router.put('/{pk}/status', summary='修改用户状态', dependencies=[DependsRBAC, Depends(RequestPermission('sys:user:edit'))])
+@router.put('/{pk}/status', summary='修改用户状态',
+            dependencies=[DependsRBAC, Depends(RequestPermission('sys:user:edit'))])
 async def status_set(request: Request, pk: Annotated[int, Path(...)]) -> ResponseModel:
     count = await user_service.update_status(request=request, pk=pk)
     if count > 0:
@@ -146,7 +149,8 @@ async def status_set(request: Request, pk: Annotated[int, Path(...)]) -> Respons
     return response_base.fail()
 
 
-@router.put('/{pk}/multi', summary='修改用户多点登录状态', dependencies=[DependsRBAC, Depends(RequestPermission('sys:user:edit'))])
+@router.put('/{pk}/multi', summary='修改用户多点登录状态',
+            dependencies=[DependsRBAC, Depends(RequestPermission('sys:user:edit'))])
 async def multi_set(request: Request, pk: Annotated[int, Path(...)]) -> ResponseModel:
     count = await user_service.update_multi_login(request=request, pk=pk)
     if count > 0:

@@ -1,24 +1,26 @@
-insert into sys_dept (id, name, level, sort, leader, phone, email, status, del_flag, parent_id, created_time, updated_time)
-values  (1, 'test', 0, 0, null, null, null, 1, 0, null, '2023-06-26 17:13:45', null);
+insert into sys_dept (id, name, level, sort, leader, phone, email, status, del_flag, parent_id, created_time,
+                      updated_time)
+values (1, 'test', 0, 0, null, null, null, 1, 0, null, '2023-06-26 17:13:45', null);
 
 insert into sys_api (id, name, method, path, remark, created_time, updated_time)
-values  (1, '创建API', 'POST', '/api/v1/apis', null, '2024-02-02 11:29:47', null),
-        (2, '删除API', 'DELETE', '/api/v1/apis', null, '2024-02-02 11:31:32', null),
-        (3, '编辑API', 'PUT', '/api/v1/apis/{pk}', null, '2024-02-02 11:32:22', null);
+values (1, '创建API', 'POST', '/api/v1/apis', null, '2024-02-02 11:29:47', null),
+       (2, '删除API', 'DELETE', '/api/v1/apis', null, '2024-02-02 11:31:32', null),
+       (3, '编辑API', 'PUT', '/api/v1/apis/{pk}', null, '2024-02-02 11:32:22', null);
 
-INSERT INTO sys_menu (id, title, NAME, LEVEL, menu_type, perms, STATUS, display, CACHE, parent_id, created_time, is_admin)
+INSERT INTO sys_menu (id, title, NAME, LEVEL, menu_type, perms, STATUS, display, CACHE, parent_id, created_time,
+                      is_admin)
 VALUES-- ################################  平台端  #########################
-        (1, '工作台', 'Workplace', 0, 0, NULL, 1, 1, 1, NULL, NOW(), 1),
-        (2, '商户管理', 'Store', 0, 0, NULL, 1, 1, 1, NULL, NOW(), 1),
-        (21, '系统管理', 'System', 0, 0, NULL, 1, 1, 1, NULL, NOW(), 1),
-        (22, '系统监控', 'monitor', 0, 0, NULL, 1, 1, 1, NULL, NOW(), 1),
-        (23, '日志', 'log', 0, 0, NULL, 1, 1, 1, NULL, NOW(), 1),
-        (2010, '商户列表', 'StoreList', 1, 1, 'tenant:store:list', 1, 1, 1, 2, NOW(), 1),
-        (2011, '商户查询', 'StoreQuery', 2, 2, 'tenant:store:query', 1, 1, 1, 2010, NOW(), 1),
-        (2012, '商户新增', 'StoreAdd', 2, 2, 'tenant:store:add', 1, 1, 1, 2010, NOW(), 1),
-        (2013, '商户删除', 'StoreDel', 2, 2, 'tenant:store:del', 1, 1, 1, 2010, NOW(), 1),
-        (2014, '商户编辑', 'Storeupdate', 2, 2, 'tenant:store:edit', 1, 1, 1, 2010, NOW(), 1),
-        (2110, '部门管理', 'SysDept', 1, 1, 'sys:dept:list', 1, 1, 1, 21, NOW(), 1),
+      (1, '工作台', 'Workplace', 0, 0, NULL, 1, 1, 1, NULL, NOW(), 1),
+      (2, '商户管理', 'Store', 0, 0, NULL, 1, 1, 1, NULL, NOW(), 1),
+      (21, '系统管理', 'System', 0, 0, NULL, 1, 1, 1, NULL, NOW(), 1),
+      (22, '系统监控', 'monitor', 0, 0, NULL, 1, 1, 1, NULL, NOW(), 1),
+      (23, '日志', 'log', 0, 0, NULL, 1, 1, 1, NULL, NOW(), 1),
+      (2010, '商户列表', 'StoreList', 1, 1, 'tenant:store:list', 1, 1, 1, 2, NOW(), 1),
+      (2011, '商户查询', 'StoreQuery', 2, 2, 'tenant:store:query', 1, 1, 1, 2010, NOW(), 1),
+      (2012, '商户新增', 'StoreAdd', 2, 2, 'tenant:store:add', 1, 1, 1, 2010, NOW(), 1),
+      (2013, '商户删除', 'StoreDel', 2, 2, 'tenant:store:del', 1, 1, 1, 2010, NOW(), 1),
+      (2014, '商户编辑', 'StoreUpdate', 2, 2, 'tenant:store:edit', 1, 1, 1, 2010, NOW(), 1),
+      (2015, '商户审核', 'StoreReview', 2, 2, 'tenant:store:review', 1, 1, 1, 2010, NOW(), 1) (2110, '部门管理', 'SysDept', 1, 1, 'sys:dept:list', 1, 1, 1, 21, NOW(), 1),
         (2111, '部门查询', 'QueryDept', 2, 2, 'sys:dept:query', 1, 1, 1, 2110, NOW(), 1),
         (2112, '部门新增', 'AddDept', 2, 2, 'sys:dept:add', 1, 1, 1, 2110, NOW(), 1),
         (2113, '部门删除', 'DelDept', 2, 2, 'sys:dept:del', 1, 1, 1, 2110, NOW(), 1),
@@ -73,13 +75,17 @@ VALUES-- ################################  平台端  #########################
         (5044, '菜单修改', 'UpdateMenu', 2, 2, 'sys:menu:edit', 1, 1, 1, 5040, NOW(), 0)
 
 insert into sys_role (id, name, status, remark, created_time, updated_time)
-values  (1, 'test', 1, null, '2023-06-26 17:13:45', null);
+values (1, 'test', 1, null, '2023-06-26 17:13:45', null);
 
 insert into sys_role_menu (id, role_id, menu_id)
-values  (1, 1, 1);
+values (1, 1, 1);
 
-insert into sys_user (id, uuid, username, nickname, password, salt, email, is_superuser, is_staff, status, is_multi_login, avatar, phone, join_time, last_login_time, dept_id, created_time, updated_time)
-values  (1, 'af4c804f-3966-4949-ace2-3bb7416ea926', 'admin', '用户88888', '$2b$12$8y2eNucX19VjmZ3tYhBLcOsBwy9w1IjBQE4SSqwMDL5bGQVp2wqS.', 0x24326224313224387932654E7563583139566A6D5A33745968424C634F, 'admin@example.com', 1, 1, 1, 0, null, null, '2023-06-26 17:13:45', '2024-11-18 13:53:57', 1, '2023-06-26 17:13:45', '2024-11-18 13:53:57');
+insert into sys_user (id, uuid, username, nickname, password, salt, email, is_superuser, is_staff, status,
+                      is_multi_login, avatar, phone, join_time, last_login_time, dept_id, created_time, updated_time)
+values (1, 'af4c804f-3966-4949-ace2-3bb7416ea926', 'admin', '用户88888',
+        '$2b$12$8y2eNucX19VjmZ3tYhBLcOsBwy9w1IjBQE4SSqwMDL5bGQVp2wqS.',
+        0x24326224313224387932654E7563583139566A6D5A33745968424C634F, 'admin@example.com', 1, 1, 1, 0, null, null,
+        '2023-06-26 17:13:45', '2024-11-18 13:53:57', 1, '2023-06-26 17:13:45', '2024-11-18 13:53:57');
 
 insert into sys_user_role (id, user_id, role_id)
-values  (1, 1, 1);
+values (1, 1, 1);

@@ -35,10 +35,10 @@ async def get_dict_data(pk: Annotated[int, Path(...)]) -> ResponseSchemaModel[Ge
     ],
 )
 async def get_pagination_dict_datas(
-    db: CurrentSession,
-    label: Annotated[str | None, Query()] = None,
-    value: Annotated[str | None, Query()] = None,
-    status: Annotated[int | None, Query()] = None,
+        db: CurrentSession,
+        label: Annotated[str | None, Query()] = None,
+        value: Annotated[str | None, Query()] = None,
+        status: Annotated[int | None, Query()] = None,
 ) -> ResponseSchemaModel[PageData[GetDictDataDetail]]:
     dict_data_select = await dict_data_service.get_select(label=label, value=value, status=status)
     page_data = await paging_data(db, dict_data_select)

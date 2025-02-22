@@ -53,13 +53,13 @@ async def register_init(app: FastAPI):
 
 
 def create_fastapi_app(
-    title: str,
-    version: str,
-    description: str,
-    docs_url: str,
-    redoc_url: str,
-    openapi_url: str,
-    router: object,
+        title: str,
+        version: str,
+        description: str,
+        docs_url: str,
+        redoc_url: str,
+        openapi_url: str,
+        router: object,
 ) -> FastAPI:
     """
     创建并配置 FastAPI 应用

@@ -32,25 +32,28 @@ router = APIRouter()
                 DependsRBAC
             ])
 async def get_all_roles(request: Request) -> ResponseSchemaModel[list[GetRoleDetail]]:
-    roles = await role_service.get_all(store_id=request.user.store_id)
+    roles = await role_service.get_all(request=request)
     data = select_list_serialize(roles)
     return response_base.success(data=data)
 
 
 @router.get('/{pk}/all', summary='获取用户所有角色', dependencies=[DependsJwtAuth])
-async def get_user_all_roles(request: Request, pk: Annotated[int, Path(...)]) -> ResponseSchemaModel[list[GetRoleDetail]]:
+async def get_user_all_roles(request: Request, pk: Annotated[int, Path(...)]) -> ResponseSchemaModel[
+    list[GetRoleDetail]]:
     roles = await role_service.get_by_user(request=request, pk=pk)
     data = select_list_serialize(roles)
     return response_base.success(data=data)
 
 
 @router.get('/{pk}/menus', summary='获取角色所有菜单', dependencies=[DependsJwtAuth])
-async def get_role_all_menus(request: Request, pk: Annotated[int, Path(...)]) -> ResponseSchemaModel[list[dict[str, Any]]]:
+async def get_role_all_menus(request: Request, pk: Annotated[int, Path(...)]) -> ResponseSchemaModel[
+    list[dict[str, Any]]]:
     menu = await menu_service.get_role_menu_tree(request=request, pk=pk)
     return response_base.success(data=menu)
 
 
-@router.get('/{pk}/rules', deprecated=True, description='此接口作废', summary='获取角色所有数据规则', dependencies=[DependsJwtAuth])
+@router.get('/{pk}/rules', deprecated=True, description='此接口作废', summary='获取角色所有数据规则',
+            dependencies=[DependsJwtAuth])
 async def get_role_all_rules(request: Request, pk: Annotated[int, Path(...)]) -> ResponseSchemaModel[list[int]]:
     rule = await data_rule_service.get_role_rules(request=request, pk=pk)
     return response_base.success(data=rule)
@@ -78,10 +81,10 @@ async def get_role(reqeust: Request, pk: Annotated[int, Path(...)]) -> ResponseS
     ],
 )
 async def get_pagination_roles(
-    request: Request,
-    db: CurrentSession,
-    name: Annotated[str | None, Query()] = None,
-    status: Annotated[int | None, Query()] = None,
+        request: Request,
+        db: CurrentSession,
+        name: Annotated[str | None, Query()] = None,
+        status: Annotated[int | None, Query()] = None,
 ) -> ResponseSchemaModel[PageData[GetRoleDetail]]:
     role_select = await role_service.get_select(request=request, name=name, status=status)
     page_data = await paging_data(db, role_select)

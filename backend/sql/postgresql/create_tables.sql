@@ -2,10 +2,10 @@ create table sys_api
 (
     id           serial
         primary key,
-    name         varchar(50)              not null
+    name         varchar(50)  not null
         unique,
-    method       varchar(16)              not null,
-    path         varchar(500)             not null,
+    method       varchar(16)  not null,
+    path         varchar(500) not null,
     remark       text,
     created_time timestamp with time zone not null,
     updated_time timestamp with time zone
@@ -58,12 +58,12 @@ create table sys_config
 (
     id           serial
         primary key,
-    name         varchar(20)              not null,
+    name         varchar(20) not null,
     type         varchar(20),
-    key          varchar(50)              not null
+    key varchar (50) not null
         unique,
-    value        text                     not null,
-    is_frontend  integer                  not null,
+    value        text        not null,
+    is_frontend  integer     not null,
     remark       text,
     created_time timestamp with time zone not null,
     updated_time timestamp with time zone
@@ -94,13 +94,13 @@ create table sys_data_rule
 (
     id           serial
         primary key,
-    name         varchar(255)             not null
+    name         varchar(255) not null
         unique,
-    model        varchar(50)              not null,
-    "column"     varchar(20)              not null,
-    operator     integer                  not null,
-    expression   integer                  not null,
-    value        varchar(255)             not null,
+    model        varchar(50)  not null,
+    "column"     varchar(20)  not null,
+    operator     integer      not null,
+    expression   integer      not null,
+    value        varchar(255) not null,
     created_time timestamp with time zone not null,
     updated_time timestamp with time zone
 );
@@ -130,17 +130,17 @@ create table sys_dept
 (
     id           serial
         primary key,
-    name         varchar(50)              not null,
-    level        integer                  not null,
-    sort         integer                  not null,
+    name         varchar(50) not null,
+    level        integer     not null,
+    sort         integer     not null,
     leader       varchar(20),
     phone        varchar(11),
     email        varchar(50),
-    status       integer                  not null,
-    del_flag     integer                  not null,
+    status       integer     not null,
+    del_flag     integer     not null,
     parent_id    integer
-                                          references sys_dept
-                                              on delete set null,
+                             references sys_dept
+                                 on delete set null,
     created_time timestamp with time zone not null,
     updated_time timestamp with time zone
 );
@@ -179,11 +179,11 @@ create table sys_dict_type
 (
     id           serial
         primary key,
-    name         varchar(32)              not null
+    name         varchar(32) not null
         unique,
-    code         varchar(32)              not null
+    code         varchar(32) not null
         unique,
-    status       integer                  not null,
+    status       integer     not null,
     remark       text,
     created_time timestamp with time zone not null,
     updated_time timestamp with time zone
@@ -210,18 +210,18 @@ create table sys_login_log
 (
     id           serial
         primary key,
-    user_uuid    varchar(50)              not null,
-    username     varchar(20)              not null,
-    status       integer                  not null,
-    ip           varchar(50)              not null,
+    user_uuid    varchar(50)  not null,
+    username     varchar(20)  not null,
+    status       integer      not null,
+    ip           varchar(50)  not null,
     country      varchar(50),
     region       varchar(50),
     city         varchar(50),
-    user_agent   varchar(255)             not null,
+    user_agent   varchar(255) not null,
     os           varchar(50),
     browser      varchar(50),
     device       varchar(50),
-    msg          text                     not null,
+    msg          text         not null,
     login_time   timestamp with time zone not null,
     created_time timestamp with time zone not null
 );
@@ -263,22 +263,22 @@ create table sys_menu
 (
     id           serial
         primary key,
-    title        varchar(50)              not null,
-    name         varchar(50)              not null,
-    level        integer                  not null,
-    sort         integer                  not null,
+    title        varchar(50) not null,
+    name         varchar(50) not null,
+    level        integer     not null,
+    sort         integer     not null,
     icon         varchar(100),
     path         varchar(200),
-    menu_type    integer                  not null,
+    menu_type    integer     not null,
     component    varchar(255),
     perms        varchar(100),
-    status       integer                  not null,
-    display      integer                  not null,
-    cache        integer                  not null,
+    status       integer     not null,
+    display      integer     not null,
+    cache        integer     not null,
     remark       text,
     parent_id    integer
-                                          references sys_menu
-                                              on delete set null,
+                             references sys_menu
+                                 on delete set null,
     created_time timestamp with time zone not null,
     updated_time timestamp with time zone
 );
@@ -327,24 +327,24 @@ create table sys_opera_log
 (
     id           serial
         primary key,
-    trace_id     varchar(32)              not null,
+    trace_id     varchar(32)      not null,
     username     varchar(20),
-    method       varchar(20)              not null,
-    title        varchar(255)             not null,
-    path         varchar(500)             not null,
-    ip           varchar(50)              not null,
+    method       varchar(20)      not null,
+    title        varchar(255)     not null,
+    path         varchar(500)     not null,
+    ip           varchar(50)      not null,
     country      varchar(50),
     region       varchar(50),
     city         varchar(50),
-    user_agent   varchar(255)             not null,
+    user_agent   varchar(255)     not null,
     os           varchar(50),
     browser      varchar(50),
     device       varchar(50),
     args         json,
-    status       integer                  not null,
-    code         varchar(20)              not null,
+    status       integer          not null,
+    code         varchar(20)      not null,
     msg          text,
-    cost_time    double precision         not null,
+    cost_time    double precision not null,
     opera_time   timestamp with time zone not null,
     created_time timestamp with time zone not null
 );
@@ -398,9 +398,9 @@ create table sys_role
 (
     id           serial
         primary key,
-    name         varchar(20)              not null
+    name         varchar(20) not null
         unique,
-    status       integer                  not null,
+    status       integer     not null,
     remark       text,
     created_time timestamp with time zone not null,
     updated_time timestamp with time zone
@@ -425,15 +425,15 @@ create table sys_gen_business
 (
     id                      serial
         primary key,
-    app_name                varchar(50)              not null,
-    table_name_en           varchar(255)             not null
+    app_name                varchar(50)  not null,
+    table_name_en           varchar(255) not null
         unique,
-    table_name_zh           varchar(255)             not null,
-    table_simple_name_zh    varchar(255)             not null,
+    table_name_zh           varchar(255) not null,
+    table_simple_name_zh    varchar(255) not null,
     table_comment           varchar(255),
     schema_name             varchar(255),
-    default_datetime_column boolean                  not null,
-    api_version             varchar(20)              not null,
+    default_datetime_column boolean      not null,
+    api_version             varchar(20)  not null,
     gen_path                varchar(255),
     remark                  text,
     created_time            timestamp with time zone not null,
@@ -515,14 +515,14 @@ create table sys_dict_data
 (
     id           serial
         primary key,
-    label        varchar(32)              not null
+    label        varchar(32) not null
         unique,
-    value        varchar(32)              not null
+    value        varchar(32) not null
         unique,
-    sort         integer                  not null,
-    status       integer                  not null,
+    sort         integer     not null,
+    status       integer     not null,
     remark       text,
-    type_id      integer                  not null
+    type_id      integer     not null
         references sys_dict_type
             on delete cascade,
     created_time timestamp with time zone not null,
@@ -554,25 +554,25 @@ create table sys_user
 (
     id              serial
         primary key,
-    uuid            varchar(50)              not null
+    uuid            varchar(50) not null
         unique,
-    username        varchar(20)              not null,
-    nickname        varchar(20)              not null
+    username        varchar(20) not null,
+    nickname        varchar(20) not null
         unique,
     password        varchar(255),
-    salt            bytea,
-    email           varchar(50)              not null,
-    is_superuser    integer                  not null,
-    is_staff        integer                  not null,
-    status          integer                  not null,
-    is_multi_login  integer                  not null,
+    salt bytea,
+    email           varchar(50) not null,
+    is_superuser    integer     not null,
+    is_staff        integer     not null,
+    status          integer     not null,
+    is_multi_login  integer     not null,
     avatar          varchar(255),
     phone           varchar(11),
     join_time       timestamp with time zone not null,
     last_login_time timestamp with time zone,
     dept_id         integer
-                                             references sys_dept
-                                                 on delete set null,
+                                references sys_dept
+                                    on delete set null,
     created_time    timestamp with time zone not null,
     updated_time    timestamp with time zone
 );
@@ -688,15 +688,15 @@ create table sys_user_social
 (
     id           serial
         primary key,
-    source       varchar(20)              not null,
+    source       varchar(20) not null,
     open_id      varchar(20),
     uid          varchar(20),
     union_id     varchar(20),
     scope        varchar(120),
     code         varchar(50),
     user_id      integer
-                                          references sys_user
-                                              on delete set null,
+                             references sys_user
+                                 on delete set null,
     created_time timestamp with time zone not null,
     updated_time timestamp with time zone
 );

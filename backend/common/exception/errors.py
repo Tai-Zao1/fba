@@ -61,7 +61,7 @@ class ServerError(BaseExceptionMixin):
     code = StandardResponseCode.HTTP_500
 
     def __init__(
-        self, *, msg: str = 'Internal Server Error', data: Any = None, background: BackgroundTask | None = None
+            self, *, msg: str = 'Internal Server Error', data: Any = None, background: BackgroundTask | None = None
     ):
         super().__init__(msg=msg, data=data, background=background)
 

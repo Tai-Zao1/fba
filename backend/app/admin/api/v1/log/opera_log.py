@@ -25,10 +25,10 @@ router = APIRouter()
     ],
 )
 async def get_pagination_opera_logs(
-    db: CurrentSession,
-    username: Annotated[str | None, Query()] = None,
-    status: Annotated[int | None, Query()] = None,
-    ip: Annotated[str | None, Query()] = None,
+        db: CurrentSession,
+        username: Annotated[str | None, Query()] = None,
+        status: Annotated[int | None, Query()] = None,
+        ip: Annotated[str | None, Query()] = None,
 ) -> ResponseSchemaModel[PageData[GetOperaLogDetail]]:
     log_select = await opera_log_service.get_select(username=username, status=status, ip=ip)
     page_data = await paging_data(db, log_select)

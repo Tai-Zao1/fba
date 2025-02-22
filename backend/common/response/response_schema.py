@@ -72,12 +72,13 @@ class ResponseSchemaModel(ResponseModel, Generic[SchemaT]):
 
     data: SchemaT
 
+
 class ResponseBase:
     """统一返回方法"""
 
     @staticmethod
     def __response(
-        *, res: CustomResponseCode | CustomResponse = None, data: Any | None = None
+            *, res: CustomResponseCode | CustomResponse = None, data: Any | None = None
     ) -> ResponseModel | ResponseSchemaModel:
         """
         请求返回通用方法
@@ -89,26 +90,26 @@ class ResponseBase:
         return ResponseModel(code=res.code, msg=res.msg, data=data)
 
     def success(
-        self,
-        *,
-        res: CustomResponseCode | CustomResponse = CustomResponseCode.HTTP_200,
-        data: Any | None = None,
+            self,
+            *,
+            res: CustomResponseCode | CustomResponse = CustomResponseCode.HTTP_200,
+            data: Any | None = None,
     ) -> ResponseModel | ResponseSchemaModel:
         return self.__response(res=res, data=data)
 
     def fail(
-        self,
-        *,
-        res: CustomResponseCode | CustomResponse = CustomResponseCode.HTTP_400,
-        data: Any = None,
+            self,
+            *,
+            res: CustomResponseCode | CustomResponse = CustomResponseCode.HTTP_400,
+            data: Any = None,
     ) -> ResponseModel | ResponseSchemaModel:
         return self.__response(res=res, data=data)
 
     @staticmethod
     def fast_success(
-        *,
-        res: CustomResponseCode | CustomResponse = CustomResponseCode.HTTP_200,
-        data: Any | None = None,
+            *,
+            res: CustomResponseCode | CustomResponse = CustomResponseCode.HTTP_200,
+            data: Any | None = None,
     ) -> Response:
         """
         此方法是为了提高接口响应速度而创建的，在解析较大 json 时有显著性能提升，但将丢失 pydantic 解析和验证

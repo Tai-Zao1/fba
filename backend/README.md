@@ -26,7 +26,7 @@
     - Any python version between Python >= 3.10
     - Git
     - [uv](https://docs.astral.sh/uv/getting-started/installation/)
-    - Fork this repository to your GitHub account  
+    - Fork this repository to your GitHub account
 
 2. Installation and setup
 

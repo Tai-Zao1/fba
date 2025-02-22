@@ -89,6 +89,7 @@ class UserService:
     @staticmethod
     async def get_userinfo(*, request: Request, phone: str) -> User:
         async with async_db_session() as db:
+            superuser_verify(request)
             user = await user_dao.get_with_relation(db, store_id=request.user.store_id, phone=phone)
             if not user:
                 raise errors.NotFoundError(msg='用户不存在')
@@ -122,6 +123,7 @@ class UserService:
     @staticmethod
     async def update_roles(*, request: Request, phone: str, obj: UpdateUserRoleParam) -> None:
         async with async_db_session.begin() as db:
+            superuser_verify(request)
             if not request.user.is_superuser:
                 if request.user.phone != phone:
                     raise errors.AuthorizationError
@@ -151,11 +153,13 @@ class UserService:
     @staticmethod
     async def get_select(*, request: Request, dept: int, username: str = None, phone: str = None, status: int = None,
                          user_id: int = None) -> Select:
-        return await user_dao.get_list(dept=dept,
-                                       username=username,
-                                       phone=phone, status=status,
-                                       user_id=user_id,
-                                       store_id=request.user.store_id)
+        async with async_db_session():
+            superuser_verify(request)
+            return await user_dao.get_list(dept=dept,
+                                           username=username,
+                                           phone=phone, status=status,
+                                           user_id=user_id,
+                                           store_id=request.user.store_id)
 
     @staticmethod
     async def update_permission(*, request: Request, pk: int) -> int:
@@ -207,7 +211,8 @@ class UserService:
                 raise errors.NotFoundError(msg='用户不存在')
             else:
                 user_id = request.user.id
-                multi_login = await user_dao.get_multi_login(db, pk, request.user.store_id) if pk != user_id else request.user.is_multi_login
+                multi_login = await user_dao.get_multi_login(db, pk,
+                                                             request.user.store_id) if pk != user_id else request.user.is_multi_login
                 count = await user_dao.set_multi_login(db, pk, False if multi_login else True)
                 await redis_client.delete(f'{settings.JWT_USER_REDIS_PREFIX}:{request.user.id}')
                 token = get_token(request)
@@ -238,6 +243,7 @@ class UserService:
     @staticmethod
     async def delete(*, request: Request, user_id: int) -> int:
         async with async_db_session.begin() as db:
+            superuser_verify(request)
             input_user = await user_dao.get(db, user_id=user_id, store_id=request.user.store_id)
             if not input_user:
                 raise errors.NotFoundError(msg='用户不存在')

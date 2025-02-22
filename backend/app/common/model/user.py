@@ -22,6 +22,7 @@ class User(Base):
     uuid: Mapped[str] = mapped_column(String(50), init=False, default_factory=uuid4_str, unique=True)
     username: Mapped[str] = mapped_column(String(20), unique=True, index=True, comment='用户名')
     nickname: Mapped[str] = mapped_column(String(20), unique=True, comment='昵称')
+    full_name: Mapped[str] = mapped_column(String(20), unique=True, comment='姓名')
     password: Mapped[str | None] = mapped_column(String(255), comment='密码')
     salt: Mapped[bytes | None] = mapped_column(VARBINARY(255).with_variant(BYTEA(255), 'postgresql'), comment='加密盐')
     email: Mapped[str | None] = mapped_column(String(50), default=None, index=True, comment='邮箱')
@@ -57,4 +58,5 @@ class User(Base):
     socials: Mapped[list['UserSocial']] = relationship(init=False, back_populates='user')  # noqa: F821
 
     # 用户角色多对多
-    roles: Mapped[list['Role']] = relationship(init=False, secondary=sys_user_role, back_populates='users')  # noqa: F821
+    roles: Mapped[list['Role']] = relationship(init=False, secondary=sys_user_role,
+                                               back_populates='users')  # noqa: F821

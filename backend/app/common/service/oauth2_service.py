@@ -22,12 +22,12 @@ from backend.utils.timezone import timezone
 class OAuth2Service:
     @staticmethod
     async def create_with_login(
-        *,
-        request: Request,
-        response: Response,
-        background_tasks: BackgroundTasks,
-        user: dict,
-        social: UserSocialType,
+            *,
+            request: Request,
+            response: Response,
+            background_tasks: BackgroundTasks,
+            user: dict,
+            social: UserSocialType,
     ) -> GetLoginToken | None:
         async with async_db_session.begin() as db:
             # 获取 OAuth2 平台用户信息
@@ -76,7 +76,8 @@ class OAuth2Service:
                 browser=request.state.browser,
                 device=request.state.device,
             )
-            refresh_token = await jwt.create_refresh_token(str(sys_user_id), multi_login=sys_user.is_multi_login, user_type=sys_user.user_type)
+            refresh_token = await jwt.create_refresh_token(str(sys_user_id), multi_login=sys_user.is_multi_login,
+                                                           user_type=sys_user.user_type)
             await user_dao.update_login_time(db, sys_user.phone)
             await db.refresh(sys_user)
             login_log = dict(

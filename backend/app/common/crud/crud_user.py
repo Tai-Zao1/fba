@@ -182,7 +182,8 @@ class CRUDUser(CRUDPlus[User]):
         """
         return await self.update_model(db, pk, {'password': new_pwd})
 
-    async def get_list(self, store_id: int, dept: int = None, username: str = None, phone: str = None, status: int = None,
+    async def get_list(self, store_id: int, dept: int = None, username: str = None, phone: str = None,
+                       status: int = None,
                        user_id: int = None) -> Select:
         """
         获取用户列表
@@ -197,7 +198,7 @@ class CRUDUser(CRUDPlus[User]):
         """
         stmt = (
             select(self.model)
-            .where(self.model.store_id==store_id)
+            .where(self.model.store_id == store_id)
             .options(
                 selectinload(self.model.dept).options(noload(Dept.parent), noload(Dept.children), noload(Dept.users)),
                 noload(self.model.socials),
@@ -313,7 +314,8 @@ class CRUDUser(CRUDPlus[User]):
         """
         return await self.update_model(db, user_id, {'is_multi_login': multi_login})
 
-    async def get_with_relation(self, db: AsyncSession, *, store_id: int = None, user_type: str = None, user_id: int = None,
+    async def get_with_relation(self, db: AsyncSession, *, store_id: int = None, user_type: str = None,
+                                user_id: int = None,
                                 phone: str = None) -> User | None:
         """
         获取用户和（部门，角色，菜单，规则）

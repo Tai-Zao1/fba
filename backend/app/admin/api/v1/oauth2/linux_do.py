@@ -32,10 +32,10 @@ async def linux_do_auth2() -> ResponseSchemaModel[str]:
     dependencies=[Depends(RateLimiter(times=5, minutes=1))],
 )
 async def linux_do_login(
-    request: Request,
-    response: Response,
-    background_tasks: BackgroundTasks,
-    oauth2: FastAPIOAuth20 = Depends(_linux_do_oauth2),
+        request: Request,
+        response: Response,
+        background_tasks: BackgroundTasks,
+        oauth2: FastAPIOAuth20 = Depends(_linux_do_oauth2),
 ):
     token, _state = oauth2
     access_token = token['access_token']

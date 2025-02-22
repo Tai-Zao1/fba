@@ -23,4 +23,5 @@ class DataRule(Base):
     value: Mapped[str] = mapped_column(String(255), comment='规则值')
 
     # 角色规则多对多
-    roles: Mapped[list['Role']] = relationship(init=False, secondary=sys_role_data_rule, back_populates='rules')  # noqa: F821
+    roles: Mapped[list['Role']] = relationship(init=False, secondary=sys_role_data_rule,
+                                               back_populates='rules')  # noqa: F821

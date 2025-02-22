@@ -16,16 +16,19 @@ router = APIRouter()
 
 @router.get("/list",
             summary='（模糊条件）分页获取所有商户',
-            dependencies=[Depends(RequestPermission('tenant:store:list')), DependsRBAC, DependsJwtAuth, DependsPagination])
+            dependencies=[DependsJwtAuth, Depends(RequestPermission('tenant:store:list')), DependsRBAC,
+                          DependsPagination])
 async def list_store(
         db: CurrentSession,
+        request: Request,
         store_name: Annotated[str | None, Query(description='店铺名称')] = None,
         province_id: Annotated[int | None, Query(description='省份id')] = None,
         city_id: Annotated[int | None, Query(description='城市id')] = None,
         area_id: Annotated[int | None, Query(description='区县id')] = None,
         status: Annotated[int | None, Query(description='店铺状态,0:审核中，1:审核通过，2:审核拒绝')] = None
 ) -> ResponseSchemaModel[PageData[GetStoreInfoList]]:
-    store_select = await store_service.get_select(store_name=store_name, province_id=province_id, city_id=city_id,
+    store_select = await store_service.get_select(request=request, store_name=store_name,
+                                                  province_id=province_id, city_id=city_id,
                                                   area_id=area_id, status=status)
     store_page = await paging_data(db, store_select)
     return response_base.success(data=store_page)

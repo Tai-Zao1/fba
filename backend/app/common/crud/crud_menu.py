@@ -109,7 +109,8 @@ class CRUDMenu(CRUDPlus[Menu]):
         :param is_admin
         :return:
         """
-        stmt = select(self.model).options(selectinload(self.model.children)).where(self.model.id == menu_id, self.model.is_admin == is_admin)
+        stmt = select(self.model).options(selectinload(self.model.children)).where(self.model.id == menu_id,
+                                                                                   self.model.is_admin == is_admin)
         result = await db.execute(stmt)
         menu = result.scalars().first()
         return menu.children

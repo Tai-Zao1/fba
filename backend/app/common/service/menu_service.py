@@ -29,7 +29,8 @@ class MenuService:
             return menu
 
     @staticmethod
-    async def get_menu_tree(*,request: Request, title: str | None = None, status: int | None = None) -> list[dict[str, Any]]:
+    async def get_menu_tree(*, request: Request, title: str | None = None, status: int | None = None) -> list[
+        dict[str, Any]]:
         async with async_db_session() as db:
             if request.user.user_type == '00':
                 is_admin = 1
@@ -88,7 +89,7 @@ class MenuService:
             await menu_dao.create(db, obj, is_admin)
 
     @staticmethod
-    async def update(*,request: Request, pk: int, obj: UpdateMenuParam) -> int:
+    async def update(*, request: Request, pk: int, obj: UpdateMenuParam) -> int:
         async with async_db_session.begin() as db:
             if request.user.user_type == '00':
                 is_admin = 1

@@ -57,7 +57,8 @@ class AuthService:
             return a_token.access_token, user
 
     async def login(
-        self, *, request: Request, response: Response, user_type: str, obj: AuthLoginParam, background_tasks: BackgroundTasks
+            self, *, request: Request, response: Response, user_type: str, obj: AuthLoginParam,
+            background_tasks: BackgroundTasks
     ) -> GetLoginToken:
         async with async_db_session.begin() as db:
             user = None
@@ -66,7 +67,8 @@ class AuthService:
                 # 获取字典，判断是否需要传验证码
                 captcha_dict = await dict_type_dao.get_by_code(db, code='captcha_code')
                 if captcha_dict.status == 1:
-                    captcha_code = await redis_client.get(f'{admin_settings.CAPTCHA_LOGIN_REDIS_PREFIX}:{request.state.ip}')
+                    captcha_code = await redis_client.get(
+                        f'{admin_settings.CAPTCHA_LOGIN_REDIS_PREFIX}:{request.state.ip}')
                     if not captcha_code:
                         raise errors.AuthorizationError(msg='验证码失效，请重新获取')
                     if captcha_code.lower() != obj.captcha.lower():

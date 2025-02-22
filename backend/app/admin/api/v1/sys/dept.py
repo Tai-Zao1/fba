@@ -17,7 +17,7 @@ router = APIRouter()
 
 @router.get('/{pk}',
             summary='获取部门详情',
-            dependencies=[DependsJwtAuth,Depends(RequestPermission('sys:dept:query')), DependsRBAC])
+            dependencies=[DependsJwtAuth, Depends(RequestPermission('sys:dept:query')), DependsRBAC])
 async def get_dept(pk: Annotated[int, Path(...)],
                    request: Request
                    ) -> ResponseSchemaModel[GetDeptDetail]:

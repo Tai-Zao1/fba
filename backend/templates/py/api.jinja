@@ -17,62 +17,62 @@ router = APIRouter()
 
 @router.get('/{pk}', summary='获取{{ table_simple_name_zh }}详情', dependencies=[DependsJwtAuth])
 async def get_{{ table_name_en }}(pk: Annotated[int, Path(...)]) -> ResponseSchemaModel[Get{{ schema_name }}Detail]:
-    {{ table_name_en }} = await {{ table_name_en }}_service.get(pk=pk)
-    return response_base.success(data={{ table_name_en }})
+{{ table_name_en }} = await {{ table_name_en }}_service.get(pk=pk)
+return response_base.success(data={{ table_name_en }})
 
 
 @router.get(
-    '',
-    summary='（模糊条件）分页获取所有{{ table_simple_name_zh }}',
-    dependencies=[
-        DependsJwtAuth,
-        DependsPagination,
-    ],
+'',
+summary='（模糊条件）分页获取所有{{ table_simple_name_zh }}',
+dependencies=[
+DependsJwtAuth,
+DependsPagination,
+],
 )
 async def get_pagination_{{ table_name_en }}(db: CurrentSession) -> ResponseSchemaModel[PageData[Get{{ schema_name }}Detail]]:
-    {{ table_name_en }}_select = await {{ table_name_en }}_service.get_select()
-    page_data = await paging_data(db, {{ table_name_en }}_select)
-    return response_base.success(data=page_data)
+{{ table_name_en }}_select = await {{ table_name_en }}_service.get_select()
+page_data = await paging_data(db, {{ table_name_en }}_select)
+return response_base.success(data=page_data)
 
 
 @router.post(
-    '',
-    summary='创建{{ table_simple_name_zh }}',
-    dependencies=[
-        Depends(RequestPermission('{{ permission }}:add')),
-        DependsRBAC,
-    ],
+'',
+summary='创建{{ table_simple_name_zh }}',
+dependencies=[
+Depends(RequestPermission('{{ permission }}:add')),
+DependsRBAC,
+],
 )
 async def create_{{ table_name_en }}(obj: Create{{ schema_name }}Param) -> ResponseModel:
-    await {{ table_name_en }}_service.create(obj=obj)
-    return response_base.success()
+await {{ table_name_en }}_service.create(obj=obj)
+return response_base.success()
 
 
 @router.put(
-    '/{pk}',
-    summary='更新{{ table_simple_name_zh }}',
-    dependencies=[
-        Depends(RequestPermission('{{ permission }}:edit')),
-        DependsRBAC,
-    ],
+'/{pk}',
+summary='更新{{ table_simple_name_zh }}',
+dependencies=[
+Depends(RequestPermission('{{ permission }}:edit')),
+DependsRBAC,
+],
 )
 async def update_{{ table_name_en }}(pk: Annotated[int, Path(...)], obj: Update{{ schema_name }}Param) -> ResponseModel:
-    count = await {{ table_name_en }}_service.update(pk=pk, obj=obj)
-    if count > 0:
-        return response_base.success()
-    return response_base.fail()
+count = await {{ table_name_en }}_service.update(pk=pk, obj=obj)
+if count > 0:
+return response_base.success()
+return response_base.fail()
 
 
 @router.delete(
-    '',
-    summary='（批量）删除{{ table_simple_name_zh }}',
-    dependencies=[
-        Depends(RequestPermission('{{ permission }}:del')),
-        DependsRBAC,
-    ],
+'',
+summary='（批量）删除{{ table_simple_name_zh }}',
+dependencies=[
+Depends(RequestPermission('{{ permission }}:del')),
+DependsRBAC,
+],
 )
 async def delete_{{ table_name_en }}(pk: Annotated[list[int], Query(...)]) -> ResponseModel:
-    count = await {{ table_name_en }}_service.delete(pk=pk)
-    if count > 0:
-        return response_base.success()
-    return response_base.fail()
+count = await {{ table_name_en }}_service.delete(pk=pk)
+if count > 0:
+return response_base.success()
+return response_base.fail()

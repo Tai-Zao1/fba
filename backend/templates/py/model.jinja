@@ -7,20 +7,20 @@ import sqlalchemy as sa
 
 from backend.common.model import {% if default_datetime_column %}Base{% else %}MappedBase{% endif %}, id_key
 {% if database_type == 'mysql' -%}
-from sqlalchemy.dialects import mysql
+    from sqlalchemy.dialects import mysql
 {% else -%}
-from sqlalchemy.dialects import postgresql
+    from sqlalchemy.dialects import postgresql
 {% endif -%}
 from sqlalchemy.orm import Mapped, mapped_column
 
 
 class {{ table_name_class }}({% if default_datetime_column %}Base{% else %}MappedBase{% endif %}):
-    """{{ table_name_zh }}"""
+"""{{ table_name_zh }}"""
 
-    __tablename__ = '{{ table_name_en }}'
+__tablename__ = '{{ table_name_en }}'
 
-    id: Mapped[id_key] = mapped_column(init=False)
-    {% for model in models %}
+id: Mapped[id_key] = mapped_column(init=False)
+{% for model in models %}
     {{ model.name }}:
     {%- if model.is_nullable %} Mapped[{{ model.pd_type }} | None]
     {%- else %} Mapped[{{ model.pd_type }}]
@@ -70,4 +70,4 @@ class {{ table_name_class }}({% if default_datetime_column %}Base{% else %}Mappe
     {% else -%}
         None)
     {%- endif -%}
-    {% endfor %}
+{% endfor %}

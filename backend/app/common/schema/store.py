@@ -1,4 +1,6 @@
 from datetime import datetime
+from enum import Enum
+from typing import Literal
 
 from pydantic import ConfigDict, Field
 
@@ -44,7 +46,7 @@ class CreateStoreParam(StoreSchema):
     """
     创建店铺
     """
-    username: str = Field(description='店铺管理员姓名')
+    full_name: str = Field(description='店铺管理员姓名')
     phone: str = Field(description='店铺管理员手机号')
     province_id: int = Field(description='省份ID')
     city_id: int = Field(description='城市ID')
@@ -67,7 +69,7 @@ class ReviewStoreParam(SchemaBase):
     """
     id: int = Field(description='店铺ID')
     remark: str | None = Field(None, description='审核备注')
-    status: int = Field(description='1:审核通过， 2：审核不通过')
+    status: Literal[0, 1, 2] = Field(description='0: 审核中， 1:审核通过， 2：审核不通过')
 
 
 class UpdateStoreParam(StoreSchema):
@@ -80,4 +82,3 @@ class UpdateStoreParam(StoreSchema):
     area_id: int = Field(description='区县ID')
     address: str | None = Field(None, description='详细地址')
     logo: str | None = Field(None, description='店铺LOGO')
-

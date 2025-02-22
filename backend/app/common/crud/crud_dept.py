@@ -35,7 +35,7 @@ class CRUDDept(CRUDPlus[Dept]):
         return await self.select_model_by_column(db, name=name, del_flag=0, store_id=store_id)
 
     async def get_all(
-        self, db: AsyncSession, store_id: int, name: str = None, leader: str = None,
+            self, db: AsyncSession, store_id: int, name: str = None, leader: str = None,
             phone: str = None, status: int = None
     ) -> Sequence[Dept]:
         """
@@ -103,7 +103,8 @@ class CRUDDept(CRUDPlus[Dept]):
         :param store_id
         :return:
         """
-        stmt = select(self.model).options(selectinload(self.model.users)).where(self.model.id == dept_id, self.model.store_id == store_id)
+        stmt = select(self.model).options(selectinload(self.model.users)).where(self.model.id == dept_id,
+                                                                                self.model.store_id == store_id)
         result = await db.execute(stmt)
         user_relation = result.scalars().first()
         return user_relation.users
@@ -117,7 +118,8 @@ class CRUDDept(CRUDPlus[Dept]):
         :param store_id:
         :return:
         """
-        stmt = select(self.model).options(selectinload(self.model.children)).where(self.model.id == dept_id, self.model.store_id==store_id)
+        stmt = select(self.model).options(selectinload(self.model.children)).where(self.model.id == dept_id,
+                                                                                   self.model.store_id == store_id)
         result = await db.execute(stmt)
         dept = result.scalars().first()
         return dept.children

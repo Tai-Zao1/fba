@@ -6,7 +6,6 @@ class AddressSchemaBase(SchemaBase):
 
 
 class GetAddressDetail(AddressSchemaBase):
-
     id: int
     adcode: int
     pcode: int

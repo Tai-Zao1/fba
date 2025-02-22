@@ -66,5 +66,6 @@ async def rbac_verify(request: Request, _token: str = DependsJwtAuth) -> None:
         if path_auth_perm not in allow_perms:
             raise AuthorizationError
 
+
 # RBAC 授权依赖注入
 DependsRBAC = Depends(rbac_verify)

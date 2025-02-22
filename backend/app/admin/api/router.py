@@ -20,4 +20,3 @@ v1.include_router(log_router)
 # v1.include_router(monitor_router)
 v1.include_router(common_router)
 v1.include_router(store_router)
-

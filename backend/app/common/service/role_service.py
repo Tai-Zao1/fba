@@ -17,6 +17,7 @@ from backend.app.common.schema.role import (
     UpdateRoleRuleParam,
 )
 from backend.common.exception import errors
+from backend.common.security.jwt import superuser_verify
 from backend.core.conf import settings
 from backend.database.db import async_db_session
 from backend.database.redis import redis_client
@@ -26,15 +27,17 @@ class RoleService:
     @staticmethod
     async def get(*, reqeust: Request, pk: int) -> Role:
         async with async_db_session() as db:
+            superuser_verify(reqeust)
             role = await role_dao.get_with_relation(db, pk, reqeust.user.store_id)
             if not role:
                 raise errors.NotFoundError(msg='角色不存在')
             return role
 
     @staticmethod
-    async def get_all(*, store_id: int) -> Sequence[Role]:
+    async def get_all(*, request: Request) -> Sequence[Role]:
         async with async_db_session() as db:
-            roles = await role_dao.get_all(db, store_id=store_id)
+            superuser_verify(request)
+            roles = await role_dao.get_all(db, store_id=request.user.store_id)
             return roles
 
     @staticmethod
@@ -48,11 +51,14 @@ class RoleService:
 
     @staticmethod
     async def get_select(*, request: Request, name: str = None, status: int = None) -> Select:
-        return await role_dao.get_list(name=name, status=status, store_id=request.user.store_id)
+        async with async_db_session():
+            superuser_verify(request)
+            return await role_dao.get_list(name=name, status=status, store_id=request.user.store_id)
 
     @staticmethod
     async def create(*, request: Request, obj: CreateRoleParam) -> None:
         async with async_db_session.begin() as db:
+            superuser_verify(request)
             role = await role_dao.get_by_name(db, obj.name, request.user.store_id)
             if role:
                 raise errors.ForbiddenError(msg='角色已存在')
@@ -61,6 +67,7 @@ class RoleService:
     @staticmethod
     async def update(*, request: Request, pk: int, obj: UpdateRoleParam) -> int:
         async with async_db_session.begin() as db:
+            superuser_verify(request)
             role = await role_dao.get(db, pk, request.user.store_id)
             if not role:
                 raise errors.NotFoundError(msg='角色不存在')
@@ -74,6 +81,7 @@ class RoleService:
     @staticmethod
     async def update_role_menu(*, request: Request, pk: int, menu_ids: UpdateRoleMenuParam) -> int:
         async with async_db_session.begin() as db:
+            superuser_verify(request)
             role = await role_dao.get(db, pk, request.user.store_id)
             if not role:
                 raise errors.NotFoundError(msg='角色不存在')
@@ -106,8 +114,9 @@ class RoleService:
             return count
 
     @staticmethod
-    async def delete(*, request: Request, pk: list[int],) -> int:
+    async def delete(*, request: Request, pk: list[int], ) -> int:
         async with async_db_session.begin() as db:
+            superuser_verify(request)
             for role_id in pk:
                 role_info = await role_dao.get(db, role_id, request.user.store_id)
                 if not role_info:

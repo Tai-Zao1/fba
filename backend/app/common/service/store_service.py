@@ -15,7 +15,7 @@ from backend.app.common.crud.crud_role import role_dao
 
 class StoreService:
     @staticmethod
-    async def get_select(*,
+    async def get_select(*, request: Request,
                          store_name: str | None,
                          province_id: int | None,
                          city_id: int | None,
@@ -24,9 +24,11 @@ class StoreService:
         """
         获取商户列表
         """
-
-        return await store_dao.get_list(store_name=store_name, province_id=province_id, city_id=city_id,
-                                        area_id=area_id, status=status)
+        async with async_db_session.begin() as db:
+            # 验证权限
+            superuser_verify(request)
+            return await store_dao.get_list(store_name=store_name, province_id=province_id, city_id=city_id,
+                                            area_id=area_id, status=status)
 
     @staticmethod
     async def add(*, request: Request, obj: CreateStoreParam) -> None:
@@ -112,7 +114,6 @@ class StoreService:
             if store.code != obj.code:
                 raise errors.ForbiddenError(msg='商户编码不支持修改')
             await store_dao.update_store(db, obj.id, request.user.id, obj)
-
 
 
 store_service: StoreService = StoreService()

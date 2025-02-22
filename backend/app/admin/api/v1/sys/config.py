@@ -93,9 +93,9 @@ async def get_config(pk: Annotated[int, Path(...)]) -> ResponseSchemaModel[GetCo
     ],
 )
 async def get_pagination_config(
-    db: CurrentSession,
-    name: Annotated[str | None, Query()] = None,
-    type: Annotated[str | None, Query()] = None,
+        db: CurrentSession,
+        name: Annotated[str | None, Query()] = None,
+        type: Annotated[str | None, Query()] = None,
 ) -> ResponseSchemaModel[PageData[GetConfigDetail]]:
     config_select = await config_service.get_select(name=name, type=type)
     page_data = await paging_data(db, config_select)

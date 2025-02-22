@@ -44,4 +44,5 @@ class Menu(Base):
     children: Mapped[list['Menu'] | None] = relationship(init=False, back_populates='parent')
 
     # 菜单角色多对多
-    roles: Mapped[list['Role']] = relationship(init=False, secondary=sys_role_menu, back_populates='menus')  # noqa: F821
+    roles: Mapped[list['Role']] = relationship(init=False, secondary=sys_role_menu,
+                                               back_populates='menus')  # noqa: F821

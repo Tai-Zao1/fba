@@ -27,10 +27,10 @@ router = APIRouter()
     ],
 )
 async def get_pagination_dict_types(
-    db: CurrentSession,
-    name: Annotated[str | None, Query()] = None,
-    code: Annotated[str | None, Query()] = None,
-    status: Annotated[int | None, Query()] = None,
+        db: CurrentSession,
+        name: Annotated[str | None, Query()] = None,
+        code: Annotated[str | None, Query()] = None,
+        status: Annotated[int | None, Query()] = None,
 ) -> ResponseSchemaModel[PageData[GetDictTypeDetail]]:
     dict_type_select = await dict_type_service.get_select(name=name, code=code, status=status)
     page_data = await paging_data(db, dict_type_select)

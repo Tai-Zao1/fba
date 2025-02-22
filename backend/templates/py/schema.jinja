@@ -8,25 +8,25 @@ from backend.common.schema import SchemaBase
 
 
 class {{ schema_name }}SchemaBase(SchemaBase):
-    {% for model in models %}
+{% for model in models %}
     {{ model.name }}: {% if model.nullable %}{{ model.pd_type }} | None = None{% else %}{{ model.pd_type }}{% endif %}
 
-    {% endfor %}
+{% endfor %}
 
 
 class Create{{ schema_name }}Param({{ schema_name }}SchemaBase):
-    pass
+pass
 
 
 class Update{{ schema_name }}Param({{ schema_name }}SchemaBase):
-    pass
+pass
 
 
 class Get{{ schema_name }}Detail({{ schema_name }}SchemaBase):
-    model_config = ConfigDict(from_attributes=True)
+model_config = ConfigDict(from_attributes=True)
 
-    id: int
-    {% if default_datetime_column %}
+id: int
+{% if default_datetime_column %}
     created_time: datetime
     updated_time: datetime | None = None
-    {% endif %}
+{% endif %}

@@ -19,14 +19,14 @@ class LoginLogService:
 
     @staticmethod
     async def create(
-        *,
-        db: AsyncSession,
-        request: Request,
-        user_uuid: str,
-        phone: str,
-        login_time: datetime,
-        status: int,
-        msg: str,
+            *,
+            db: AsyncSession,
+            request: Request,
+            user_uuid: str,
+            phone: str,
+            login_time: datetime,
+            status: int,
+            msg: str,
     ) -> None:
         try:
             obj_in = CreateLoginLogParam(
