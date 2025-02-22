@@ -15,13 +15,13 @@ def ensure_unique_route_names(app: FastAPI) -> None:
     :param app:
     :return:
     """
+    app_title = app.title
     temp_routes = set()
     for route in app.routes:
         if isinstance(route, APIRoute):
-            if route.name in temp_routes:
-                print(f'Non-unique route name: {route.name}')
+            if f"{app_title}_{route.name}" in temp_routes:
                 raise ValueError(f'Non-unique route name: {route.name}')
-            temp_routes.add(route.name)
+            temp_routes.add(f"{app_title}_{route.name}")
 
 
 async def http_limit_callback(request: Request, response: Response, expire: int):

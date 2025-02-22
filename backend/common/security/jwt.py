@@ -210,7 +210,8 @@ def superuser_verify(request: Request) -> bool:
     :return:
     """
     superuser = request.user.is_superuser
-    if not superuser or not request.user.is_staff:
+    store_superuser = request.user.store_superuser
+    if not (superuser or request.user.is_staff) or not store_superuser:
         raise AuthorizationError
     return superuser
 

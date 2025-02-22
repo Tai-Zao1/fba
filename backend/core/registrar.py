@@ -112,7 +112,7 @@ def register_app():
     """
     注册 Admin 后台应用
     """
-    from backend.app.router import router  # 延迟导入避免循环依赖
+    from backend.app.router_admin import router  # 延迟导入避免循环依赖
 
     return create_fastapi_app(
         title=settings.ADMIN_TITLE,
@@ -129,7 +129,7 @@ def register_app2():
     """
     注册商家后台应用
     """
-    from backend.app.router import router2  # 延迟导入避免循环依赖
+    from backend.app.router_tenant import router  # 延迟导入避免循环依赖
 
     return create_fastapi_app(
         title=settings.STORE_TITLE,
@@ -138,7 +138,7 @@ def register_app2():
         docs_url=settings.STORE_DOCS_URL,
         redoc_url=settings.STORE_REDOC_URL,
         openapi_url=settings.STORE_OPENAPI_URL,
-        router=router2,
+        router=router,
     )
 
 

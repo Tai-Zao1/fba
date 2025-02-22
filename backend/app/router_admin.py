@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 from fastapi import APIRouter
 
-from backend.app.tenant.api.router import tenant as tenant_v1
 from backend.app.admin.api.router import v1 as admin_v1
 from backend.app.admin.api.router import v1 as task_v1
+from backend.core.conf import settings
 
 '''
 admin路由
@@ -15,8 +15,3 @@ router.include_router(admin_v1)
 # router.include_router(generator_v1)
 router.include_router(task_v1)
 
-'''
-store路由
-'''
-router2 = APIRouter()
-router2.include_router(tenant_v1)

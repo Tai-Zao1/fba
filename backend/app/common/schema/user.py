@@ -69,6 +69,7 @@ class GetUserInfoNoRelationDetail(UserInfoSchemaBase):
     avatar: str | None = None
     status: StatusType = Field(default=StatusType.enable.value)
     is_superuser: bool
+    store_superuser: bool
     is_staff: bool
     is_multi_login: bool
     join_time: datetime = None
