@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 from fastapi import APIRouter
 
+from backend.app.tenant.api.router import tenant as tenant_v1
 from backend.app.admin.api.router import v1 as admin_v1
-from backend.app.tenant.api.router import v1 as tenant_v1
-from backend.app.admin.task.api.router import v1 as task_v1
+from backend.app.admin.api.router import v1 as task_v1
 
 '''
 admin路由

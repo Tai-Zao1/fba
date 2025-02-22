@@ -64,8 +64,8 @@ async def get_role_all_rules(request: Request, pk: Annotated[int, Path(...)]) ->
                           Depends(RequestPermission('sys:role:query')),
                           DependsRBAC
                           ])
-async def get_role(reqeust: Request, pk: Annotated[int, Path(...)]) -> ResponseSchemaModel[GetRoleDetail]:
-    role = await role_service.get(reqeust=reqeust, pk=pk)
+async def get_role(request: Request, pk: Annotated[int, Path(...)]) -> ResponseSchemaModel[GetRoleDetail]:
+    role = await role_service.get(request=request, pk=pk)
     data = GetRoleDetail(**select_as_dict(role))
     return response_base.success(data=data)
 

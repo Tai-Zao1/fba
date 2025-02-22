@@ -3,12 +3,10 @@
 import io
 import os.path
 import zipfile
-
 from pathlib import Path
 from typing import Sequence
 
 import aiofiles
-
 from pydantic.alias_generators import to_pascal
 
 from backend.app.admin.generator.crud.crud_gen import gen_dao

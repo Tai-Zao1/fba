@@ -3,7 +3,6 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Path, Query, Request
-from sqlalchemy.sql.functions import current_user
 
 from backend.app.common.schema.user import (
     AddUserParam,

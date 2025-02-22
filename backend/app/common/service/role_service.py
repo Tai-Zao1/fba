@@ -25,10 +25,10 @@ from backend.database.redis import redis_client
 
 class RoleService:
     @staticmethod
-    async def get(*, reqeust: Request, pk: int) -> Role:
+    async def get(*, request: Request, pk: int) -> Role:
         async with async_db_session() as db:
-            superuser_verify(reqeust)
-            role = await role_dao.get_with_relation(db, pk, reqeust.user.store_id)
+            superuser_verify(request)
+            role = await role_dao.get_with_relation(db, pk, request.user.store_id)
             if not role:
                 raise errors.NotFoundError(msg='角色不存在')
             return role

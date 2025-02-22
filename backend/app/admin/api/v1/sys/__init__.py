@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 from fastapi import APIRouter
 
-from backend.app.admin.api.v1.sys.config import router as config_router
 from backend.app.admin.api.v1.sys.data_rule import router as data_rule_router
 from backend.app.admin.api.v1.sys.dept import router as dept_router
 from backend.app.admin.api.v1.sys.dict_data import router as dict_data_router

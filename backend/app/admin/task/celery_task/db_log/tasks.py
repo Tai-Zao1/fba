@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from backend.app.admin.task.celery import celery_app
 from backend.app.common.service.login_log_service import login_log_service
 from backend.app.common.service.opera_log_service import opera_log_service
-from backend.app.admin.task.celery import celery_app
 
 
 @celery_app.task(name='delete_db_opera_log')
